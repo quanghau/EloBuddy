@@ -220,9 +220,9 @@ namespace Protype_Viktor
             ViktorMenu.AddLabel("Please, report any bugs in forums.");
             ViktorMiscMenu.AddSeparator(30);
             ViktorMenu.AddLabel("Work In Progress:");
-            ViktorMenu.AddLabel("*Auto Ignite in Combo");
-            ViktorMenu.AddLabel("*Auto Cleanse");
-            ViktorMenu.AddLabel("*Improve Damage Calculations");
+            ViktorMenu.AddLabel("-Auto Ignite in Combo");
+            ViktorMenu.AddLabel("-Auto Cleanse");
+            ViktorMenu.AddLabel("-Improve Damage Calculations");
 
             ViktorComboMenu = ViktorMenu.AddSubMenu("Combo", "Combo");
             ViktorComboMenu.AddLabel("[Combo Settings:]");
