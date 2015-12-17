@@ -1,3 +1,1 @@
 # EloBuddy
-
-#XD XD
