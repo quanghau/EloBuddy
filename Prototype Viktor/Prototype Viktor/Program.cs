@@ -22,10 +22,11 @@ namespace Protype_Viktor
         private static Spell.Targeted Q;
         private static Spell.Skillshot W, E, R;
         private static int EMaxRange = 1225;
+        private static int _tick = 0;
         private static Vector3 startPos;
         private static Menu ViktorMenu;
         private static Menu ViktorComboMenu, ViktorLaneClearMenu, ViktorMiscMenu, ViktorDrawMenu;
-        private static string version = "0.0.0.7";
+        private static string version = "0.0.0.8";
         #endregion
 
         #region PropertyChecks
@@ -159,7 +160,23 @@ namespace Protype_Viktor
         {
             if (_Player.IsDead || _Player.HasBuff("Recall")) return;
 
-            if (_AutoFollowR) AutoFollowR();
+            if (_AutoFollowR)
+            {
+                if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm") && Environment.TickCount - _tick > 0)
+                {
+                    var stormT = TargetSelector.GetTarget(2000, DamageType.Magical);
+                    if (stormT != null)
+                    {
+                        R.Cast(stormT.ServerPosition);
+                        _tick = Environment.TickCount + 500;
+                    }
+                    else if (stormT == null)
+                    {
+                        R.Cast(_Player.ServerPosition);
+                        _tick = Environment.TickCount + 500;
+                    }
+                }
+            }
 
             KillSecure();
 
@@ -311,15 +328,6 @@ namespace Protype_Viktor
             }
         }
 
-        private static void AutoFollowR()
-        {
-            if (_Player.HasBuff("Glory"))
-            {
-                var target = TargetSelector.GetTarget(1000, DamageType.Magical);
-                if (target != null)
-                    R.Cast(target);
-            }
-        }
 
         private static void CastQ()
         {
@@ -372,7 +380,7 @@ namespace Protype_Viktor
         private static void CastR()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Magical);
-            if (target != null)
+            if (target != null && R.Name == "ViktorChaosStorm")
             {
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
@@ -417,7 +425,7 @@ namespace Protype_Viktor
         {
             var AAdmg = new Double[] { 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90, 110, 130, 150, 170, 190, 210 };
 
-            return (double) AAdmg[_Player.Level >= 18 ? 18 - 1 : _Player.Level - 1] + _Player.TotalMagicalDamage * 0.5 + _Player.TotalAttackDamage;
+            return (double)AAdmg[_Player.Level - 1] + _Player.TotalMagicalDamage * 0.5 + _Player.TotalAttackDamage;
         }
 
 
