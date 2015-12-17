@@ -218,7 +218,6 @@ namespace Protype_Viktor
             ViktorMenu.AddLabel("Beta Viktor Addon. Made by Tear for EloBuddy!");
             ViktorMenu.AddLabel("Before you play, please adjust your settings in Menu.");
             ViktorMenu.AddLabel("Please, report any bugs in forums.");
-            ViktorMiscMenu.AddSeparator(30);
             ViktorMenu.AddLabel("Work In Progress:");
             ViktorMenu.AddLabel("-Auto Ignite in Combo");
             ViktorMenu.AddLabel("-Auto Cleanse");
