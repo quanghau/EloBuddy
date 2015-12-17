@@ -25,7 +25,7 @@ namespace Protype_Viktor
         private static Vector3 startPos;
         private static Menu ViktorMenu;
         private static Menu ViktorComboMenu, ViktorLaneClearMenu, ViktorMiscMenu, ViktorDrawMenu;
-        private static string version = "0.0.0.4";
+        private static string version = "0.0.0.5";
         #endregion
 
         #region PropertyChecks
