@@ -21,7 +21,6 @@ namespace Protype_Viktor
         public static AIHeroClient _Player { get { return ObjectManager.Player; } }
         private static Spell.Targeted Q;
         private static Spell.Skillshot W, E, R;
-        private static int ERange = 700;
         private static int EMaxRange = 1225;
         private static Vector3 startPos;
         private static Menu ViktorMenu;
@@ -74,11 +73,6 @@ namespace Protype_Viktor
         private static bool _GapCloser
         {
             get { return ViktorMiscMenu["Gapclose"].Cast<CheckBox>().CurrentValue; }
-
-        }
-        private static bool _AntiRengar
-        {
-            get { return ViktorMiscMenu["AntiRango"].Cast<CheckBox>().CurrentValue; }
 
         }
         private static bool _LaneClearE
@@ -155,7 +149,6 @@ namespace Protype_Viktor
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;
-            GameObject.OnCreate += GameObject_OnCreate;
 
             Chat.Print("Prototype Viktor " + version + " Loaded!");
             Console.WriteLine("Prototype Viktor " + version + " Loaded!");
@@ -239,7 +232,7 @@ namespace Protype_Viktor
             ViktorComboMenu.AddSeparator(10);
             ViktorComboMenu.Add("PredictionRate", new Slider("Prediction Rate:", 3, 1, 3));
             ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies for W:", 2, 1, 5));
-            ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calcuate in Damage Output:", 10, 1, 14));
+            ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calculate in Damage Output:", 10, 1, 14));
 
             ViktorLaneClearMenu = ViktorMenu.AddSubMenu("Lane Clear", "LaneClear");
             ViktorLaneClearMenu.Add("LaneClearQ", new CheckBox("Use Q in Lane Clear "));
@@ -256,10 +249,9 @@ namespace Protype_Viktor
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
             ViktorMiscMenu.AddLabel("[Misc Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
-            ViktorMiscMenu.Add("AntiRango", new CheckBox("Anti Rengar (W)"));
 
             ViktorMiscMenu.AddSeparator(30);
-            ViktorMiscMenu.AddLabel("* Anti Gapcloser/Anti Rengar will cast (W) on Viktor's position");
+            ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
         }
         #endregion
 
@@ -293,16 +285,6 @@ namespace Protype_Viktor
             }
         }
 
-        // Credits to Fluxy.
-        //Needs further testing.
-        private static void GameObject_OnCreate(GameObject sender, EventArgs args)
-        {
-            AIHeroClient rengar = EntityManager.Heroes.Enemies.FirstOrDefault(x => x.Hero == Champion.Rengar);
-            if (_AntiRengar && rengar != null && sender.Name == "Rengar_LeapSound.troy" && _Player.Distance(Player.Instance.Position) <= W.Range)
-            {
-                W.Cast(_Player);
-            }
-        }
 
         //Needs further testing
         //So far it tested with Xin Zhao (E), Alistar (W)
