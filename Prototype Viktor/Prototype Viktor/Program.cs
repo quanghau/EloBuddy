@@ -25,7 +25,7 @@ namespace Protype_Viktor
         private static Vector3 startPos;
         private static Menu ViktorMenu;
         private static Menu ViktorComboMenu, ViktorLaneClearMenu, ViktorMiscMenu, ViktorDrawMenu;
-        private static string version = "0.0.0.6";
+        private static string version = "0.0.0.7";
         #endregion
 
         #region PropertyChecks
@@ -335,7 +335,7 @@ namespace Protype_Viktor
             var target = TargetSelector.GetTarget(W.Range, DamageType.Magical);
             if (target !=null )
             {
-                if (target.CountEnemiesInRange(W.Range) >= _MinW)
+                if (target.CountEnemiesInRange(W.Width) >= _MinW)
 
                 W.Cast(target);
             }
