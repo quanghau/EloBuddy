@@ -173,7 +173,7 @@ namespace Protype_Viktor
             {
                 if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm") && Environment.TickCount - _tick > 0)
                 {
-                    var stormT = TargetSelector.GetTarget(1200, DamageType.Magical); //lower range.
+                    var stormT = TargetSelector.GetTarget(1500, DamageType.Magical); //lower range.
                     if (stormT != null)
                     {
                         R.Cast(stormT.ServerPosition);
