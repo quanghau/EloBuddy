@@ -259,8 +259,9 @@ namespace Protype_Viktor
             ViktorComboMenu.AddSeparator(10);
             ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies to cast W:", 2, 1, 5));
             ViktorComboMenu.Add("MinEnemiesR", new Slider("Minimum Enemies to cast R", 1, 1, 5)); //
-            ViktorComboMenu.Add("PredictionRate", new Slider("Prediction Rate:", 3, 1, 3));
             ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calculate in Damage Output:", 10, 1, 14));
+            ViktorComboMenu.Add("PredictionRate", new Slider("Prediction Rate:", 3, 1, 3));
+            
 
             ViktorLaneClearMenu = ViktorMenu.AddSubMenu("Lane Clear", "LaneClear");
             ViktorLaneClearMenu.Add("LaneClearQ", new CheckBox("Use Q in Lane Clear "));
@@ -277,11 +278,13 @@ namespace Protype_Viktor
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
             ViktorMiscMenu.AddLabel("[Misc Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
+            ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
+            ViktorMiscMenu.AddSeparator(20);
             ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
             ViktorMiscMenu.AddLabel("*Lower is better, but I think 250 is optimal.");
 
-            ViktorMiscMenu.AddSeparator(30);
-            ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
+            
+          
         }
         #endregion
 
