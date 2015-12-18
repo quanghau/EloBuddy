@@ -26,7 +26,7 @@ namespace Protype_Viktor
         private static Vector3 startPos;
         private static Menu ViktorMenu;
         private static Menu ViktorComboMenu, ViktorLaneClearMenu, ViktorMiscMenu, ViktorDrawMenu;
-        private static string version = "0.0.0.8";
+        private static string version = "0.0.0.9";
         #endregion
 
         #region PropertyChecks
@@ -55,7 +55,10 @@ namespace Protype_Viktor
         {
             get { return ViktorComboMenu["FollowR"].Cast<CheckBox>().CurrentValue; }
         }
-
+        private static bool _FollowRViktor
+        {
+            get { return ViktorComboMenu["FollowRViktor"].Cast<CheckBox>().CurrentValue; }
+        }
         private static bool _KillSteal
         {
             get { return ViktorComboMenu["EnableKS"].Cast<CheckBox>().CurrentValue; }
@@ -110,16 +113,22 @@ namespace Protype_Viktor
         {
             get { return ViktorDrawMenu["DrawR"].Cast<CheckBox>().CurrentValue; }
         }
-
         private static int _MinW
         {
             get { return ViktorComboMenu["MinW"].Cast<Slider>().CurrentValue; }
+        }
+        private static int _MinEnemiesR
+        {
+            get { return ViktorComboMenu["MinEnemiesR"].Cast<Slider>().CurrentValue; }
         }
         private static int _RTicks
         {
             get { return ViktorComboMenu["RTicks"].Cast<Slider>().CurrentValue; }
         }
-
+        private static int _RTickSlider
+        {
+            get { return ViktorMiscMenu["RTickSlider"].Cast<Slider>().CurrentValue; }
+        }
         private static HitChance PredictionRate
         {
             get
@@ -164,16 +173,16 @@ namespace Protype_Viktor
             {
                 if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm") && Environment.TickCount - _tick > 0)
                 {
-                    var stormT = TargetSelector.GetTarget(2000, DamageType.Magical);
+                    var stormT = TargetSelector.GetTarget(1200, DamageType.Magical); //lower range.
                     if (stormT != null)
                     {
                         R.Cast(stormT.ServerPosition);
-                        _tick = Environment.TickCount + 500;
+                        _tick = Environment.TickCount + _RTickSlider;
                     }
-                    else if (stormT == null)
+                    else if (stormT == null && _FollowRViktor)
                     {
                         R.Cast(_Player.ServerPosition);
-                        _tick = Environment.TickCount + 500;
+                        _tick = Environment.TickCount + _RTickSlider;
                     }
                 }
             }
@@ -229,9 +238,9 @@ namespace Protype_Viktor
             ViktorMenu.AddLabel("Before you play, please adjust your settings in Menu.");
             ViktorMenu.AddLabel("Please, report any bugs in forums.");
             ViktorMenu.AddLabel("Work In Progress:");
-            ViktorMenu.AddLabel("-Auto Ignite in Combo");
-            ViktorMenu.AddLabel("-Auto Cleanse");
-            ViktorMenu.AddLabel("-Improve Damage Calculations");
+            ViktorMenu.AddLabel("*Auto Ignite in Combo");
+            ViktorMenu.AddLabel("*Killsteal Dragon/Baron");
+            ViktorMenu.AddLabel("*Improve Damage Calculations");
 
             ViktorComboMenu = ViktorMenu.AddSubMenu("Combo", "Combo");
             ViktorComboMenu.AddLabel("[Combo Settings:]");
@@ -239,7 +248,8 @@ namespace Protype_Viktor
             ViktorComboMenu.Add("UseW", new CheckBox("Use W",false));
             ViktorComboMenu.Add("UseE", new CheckBox("Use E"));
             ViktorComboMenu.Add("UseR", new CheckBox("Use R"));
-            ViktorComboMenu.Add("FollowR", new CheckBox("Auto Follow R"));
+            ViktorComboMenu.Add("FollowR", new CheckBox("Auto Follow R (Only Enemy)"));
+            ViktorComboMenu.Add("FollowRViktor", new CheckBox("Auto Follow R (Enemies&Viktor)",false));
             ViktorComboMenu.Add("CheckR", new CheckBox("Cast R only if enemy is killable with Combo"));
             ViktorComboMenu.AddSeparator(10);
             ViktorComboMenu.AddLabel("[KillSteal Options:]");
@@ -247,8 +257,9 @@ namespace Protype_Viktor
             ViktorComboMenu.Add("KsQ", new CheckBox("KillSteal with Q"));
             ViktorComboMenu.Add("KsE", new CheckBox("KillSteal with E"));
             ViktorComboMenu.AddSeparator(10);
+            ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies to cast W:", 2, 1, 5));
+            ViktorComboMenu.Add("MinEnemiesR", new Slider("Minimum Enemies to cast R", 1, 1, 5)); //
             ViktorComboMenu.Add("PredictionRate", new Slider("Prediction Rate:", 3, 1, 3));
-            ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies for W:", 2, 1, 5));
             ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calculate in Damage Output:", 10, 1, 14));
 
             ViktorLaneClearMenu = ViktorMenu.AddSubMenu("Lane Clear", "LaneClear");
@@ -266,6 +277,8 @@ namespace Protype_Viktor
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
             ViktorMiscMenu.AddLabel("[Misc Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
+            ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
+            ViktorMiscMenu.AddLabel("*Lower is better, but I think 250 is optimal.");
 
             ViktorMiscMenu.AddSeparator(30);
             ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
@@ -292,7 +305,7 @@ namespace Protype_Viktor
                     { 
                     var loc = EntityManager.MinionsAndMonsters.GetLineFarmLocation(minions, E.Width, EMaxRange);
                     Player.CastSpell(SpellSlot.E, loc.CastPosition, minion.ServerPosition);
-                       // Chat.Print("Minions in Lane: " + minions.Count() + "Mininum minions to cast E: " + _MinMinions);
+                    // Chat.Print("Minions in Lane: " + minions.Count() + "Mininum minions to cast E: " + _MinMinions);
                     }
                     if (_LaneClearQ && minion.Health < _Player.GetSpellDamage(minion,SpellSlot.Q) + CalculateAADmg())
                     {
@@ -302,12 +315,9 @@ namespace Protype_Viktor
             }
         }
 
-
-        //Needs further testing
-        //So far it tested with Xin Zhao (E), Alistar (W)
         private static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            if (_GapCloser && (e.End.Distance(_Player) <= 170) && sender.IsValidTarget())
+            if (_GapCloser && (e.End.Distance(_Player) <= 170) && sender.IsEnemy) //fix?
                 W.Cast(_Player);
         }
 
@@ -320,7 +330,7 @@ namespace Protype_Viktor
                 {
                     CastE();
                 }
-                else if (_KsQ && target.IsValidTarget(Q.Range) && target.Health < _Player.GetSpellDamage(target, SpellSlot.E) + _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg())
+                else if (_KsQ && target.IsValidTarget(Q.Range) && target.Health < (_Player.GetSpellDamage(target, SpellSlot.E) + _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg()))
                 {
                     CastE();
                     Core.DelayAction(CastQ, 50);
@@ -341,7 +351,7 @@ namespace Protype_Viktor
         private static void CastW()
         {
             var target = TargetSelector.GetTarget(W.Range, DamageType.Magical);
-            if (target !=null )
+            if (target !=null)
             {
                 if (target.CountEnemiesInRange(W.Width) >= _MinW)
 
@@ -380,7 +390,7 @@ namespace Protype_Viktor
         private static void CastR()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Magical);
-            if (target != null && R.Name == "ViktorChaosStorm")
+            if (target != null && target.CountEnemiesInRange(R.Width) >= _MinEnemiesR && R.Name == "ViktorChaosStorm")
             {
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
@@ -406,7 +416,7 @@ namespace Protype_Viktor
                 dmg += (float) CalculateAADmg();
             }
 
-            if (_ViktorE && E.IsReady() && _Player.ServerPosition.Distance(t.ServerPosition) < EMaxRange)
+            if (_ViktorE && E.IsReady() && _Player.ServerPosition.Distance(t.ServerPosition) <= EMaxRange)
             {
                 dmg += _Player.GetSpellDamage(t, SpellSlot.E);
             }
@@ -416,7 +426,6 @@ namespace Protype_Viktor
                 dmg += _Player.GetSpellDamage(t, SpellSlot.R);
                 dmg += (float) CalculateRTickDmg(t, _RTicks);
             }
-
             return dmg;    
         }
 
@@ -432,13 +441,13 @@ namespace Protype_Viktor
         private static double CalculateRTickDmg(AIHeroClient t, int ticks)
         {
             if (R.Level == 0) return 0;
-            double dmg = 0f; ;
+            double dmg = 0f;
             if (R.Level == 1)
-                dmg += 15 + _Player.TotalMagicalDamage * 0.10;
+                dmg += (15 + _Player.TotalMagicalDamage * 0.10) * ticks;
             else if (R.Level == 2)
-                dmg += 30 + _Player.TotalMagicalDamage * 0.10;
-            else
-                dmg += 45 + _Player.TotalMagicalDamage * 0.10;
+                dmg += (30 + _Player.TotalMagicalDamage * 0.10) * ticks;
+            else if (R.Level == 3) //No point for that,  just testing.
+                dmg += (45 + _Player.TotalMagicalDamage * 0.10) * ticks;
 
             return dmg;
         }
