@@ -226,7 +226,7 @@ namespace Protype_Viktor
                     break;
                 case Orbwalker.ActiveModes.LaneClear:
                     LaneClear();
-                    break; ;
+                    break;
                 case Orbwalker.ActiveModes.JungleClear:
                     JungleClear();
                     break;
@@ -496,9 +496,6 @@ namespace Protype_Viktor
                 {
                     Ignite.Cast(target);
                 }
-
-
-
             }
         }
 
