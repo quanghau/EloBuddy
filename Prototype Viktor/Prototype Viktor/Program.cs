@@ -405,14 +405,23 @@ namespace Protype_Viktor
             if (!_KillSteal) return;
             foreach (AIHeroClient target in EntityManager.Heroes.Enemies)
             {
-                if (_KsE && target.IsValidTarget(EMaxRange) && target.Health < _Player.GetSpellDamage(target, SpellSlot.E))
+                if (_KsE && target.IsValidTarget(EMaxRange) &&
+                    target.Health < _Player.GetSpellDamage(target, SpellSlot.E))
                 {
                     CastE();
                 }
+                /*
                 else if (_KsQ && target.IsValidTarget(Q.Range) && target.Health < (_Player.GetSpellDamage(target, SpellSlot.E) + _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg()))
                 {
                     CastE();
                     Core.DelayAction(CastQ, 50);
+                }*/
+                if (_KsQ && target.IsValidTarget(Q.Range) &&
+                    target.Health < _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg())
+                {
+                    CastE();
+                    Core.DelayAction(CastQ, 50);
+
                 }
             }
         }
