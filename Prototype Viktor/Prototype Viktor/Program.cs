@@ -198,18 +198,19 @@ namespace Protype_Viktor
 
             if (_AutoFollowR)
             {
-                if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm") && Environment.TickCount - _tick > 0)
+                if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm")) // && Environment.TickCount - _tick > 0
                 {
                     var stormT = TargetSelector.GetTarget(2000, DamageType.Magical); //lower range.
                     if (stormT != null)
                     {
                         R.Cast(stormT.ServerPosition);
-                        _tick = Environment.TickCount + _RTickSlider;
+                        //_tick = Environment.TickCount + _RTickSlider;
                     }
                     if (stormT == null && _FollowRViktor)
                     {
                         R.Cast(_Player.ServerPosition);
-                        _tick = Environment.TickCount + _RTickSlider;
+                        
+                        //_tick = Environment.TickCount + _RTickSlider;
                     }
                 }
             }
