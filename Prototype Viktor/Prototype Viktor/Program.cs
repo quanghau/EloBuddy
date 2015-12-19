@@ -419,8 +419,7 @@ namespace Protype_Viktor
                 if (_KsQ && target.IsValidTarget(Q.Range) &&
                     target.Health < _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg())
                 {
-                    CastE();
-                    Core.DelayAction(CastQ, 50);
+                    CastQ();
 
                 }
             }
