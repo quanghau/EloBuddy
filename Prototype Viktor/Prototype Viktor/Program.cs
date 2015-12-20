@@ -201,7 +201,7 @@ namespace Protype_Viktor
                 if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm")) // && Environment.TickCount - _tick > 0
                 {
                     var stormT = TargetSelector.GetTarget(2000, DamageType.Magical); //lower range.
-                    if (stormT != null)
+                    if (stormT != null && stormT.IsValid && stormT.IsVisible)
                     {
                         R.Cast(stormT.ServerPosition);
                         //_tick = Environment.TickCount + _RTickSlider;
@@ -458,7 +458,7 @@ namespace Protype_Viktor
         private static void CastE()
         {
             var target = TargetSelector.GetTarget(EMaxRange, DamageType.Magical);
-            if (target != null && target.IsEnemy)
+            if (target != null && target.IsEnemy && target.IsVisible)
             {
                 if (_Player.ServerPosition.Distance(target.ServerPosition) < E.Range)
                 {
@@ -486,7 +486,7 @@ namespace Protype_Viktor
         private static void CastR()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Magical);
-            if (target != null && target.IsEnemy && !target.IsZombie && target.CountEnemiesInRange(R.Width) >= _MinEnemiesR && R.Name == "ViktorChaosStorm")
+            if (target != null && target.IsEnemy && !target.IsZombie && target.IsVisible && target.CountEnemiesInRange(R.Width) >= _MinEnemiesR && R.Name == "ViktorChaosStorm")
             {
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
