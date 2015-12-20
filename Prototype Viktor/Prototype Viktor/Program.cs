@@ -216,7 +216,7 @@ namespace Protype_Viktor
             }
 
             KillSecure();
-
+            /*
             switch (Orbwalker.ActiveModesFlags)
             {
                 case Orbwalker.ActiveModes.Combo:
@@ -232,6 +232,14 @@ namespace Protype_Viktor
                     JungleClear();
                     break;
             }
+            */
+            //Trying to locate the Auto E-R-bug
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
+            else if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
+            else if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) Harass();
+            else if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)) JungleClear();
+
 
         }
         #endregion
@@ -450,7 +458,7 @@ namespace Protype_Viktor
         private static void CastE()
         {
             var target = TargetSelector.GetTarget(EMaxRange, DamageType.Magical);
-            if (target != null)
+            if (target != null && target.IsEnemy)
             {
                 if (_Player.ServerPosition.Distance(target.ServerPosition) < E.Range)
                 {
@@ -478,7 +486,7 @@ namespace Protype_Viktor
         private static void CastR()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Magical);
-            if (target != null && !target.IsZombie && target.CountEnemiesInRange(R.Width) >= _MinEnemiesR && R.Name == "ViktorChaosStorm")
+            if (target != null && target.IsEnemy && !target.IsZombie && target.CountEnemiesInRange(R.Width) >= _MinEnemiesR && R.Name == "ViktorChaosStorm")
             {
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
