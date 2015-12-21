@@ -350,7 +350,7 @@ namespace Protype_Viktor
             ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
             ViktorMiscMenu.AddLabel("*Lower is better, but I think 250 is optimal.");
             ViktorMiscMenu.AddSeparator(10);
-            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin Select:",1,1,3));
+            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin Select:",1,1,4));
 
 
         }
@@ -587,6 +587,9 @@ namespace Protype_Viktor
                     break;
                 case 3:
                     _Player.SetSkinId(2);
+                    break;
+                case 4:
+                    _Player.SetSkinId((3));
                     break;
             }
         }
