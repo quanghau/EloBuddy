@@ -151,9 +151,9 @@ namespace Protype_Viktor
             get { return ViktorMiscMenu["RTickSlider"].Cast<Slider>().CurrentValue; }
         }
 
-        private static int _SkinChanger
+        private static Slider _SkinChanger
         {
-            get { return ViktorMiscMenu["SkinChanger"].Cast<Slider>().CurrentValue; }
+            get { return ViktorMiscMenu["SkinChanger"].Cast<Slider>(); }
         }
         private static HitChance PredictionRate
         {
@@ -187,7 +187,14 @@ namespace Protype_Viktor
 
             LoadSkills();
             LoadMenu();
-            SelectSkin();
+            SelectSkin(_SkinChanger.CurrentValue);
+
+            _SkinChanger.OnValueChange += delegate(ValueBase<int> s, ValueBase<int>.ValueChangeArgs aargs)
+            {
+                SelectSkin(aargs.NewValue);
+            };
+            
+
 
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
@@ -568,18 +575,18 @@ namespace Protype_Viktor
             return dmg;
         }
 
-        private static void SelectSkin()
+        private static void SelectSkin(int skn )
         {
-            switch (_SkinChanger)
+            switch (skn)
             {
                 case 1:
-                    _Player.SetSkinId(1);
+                    _Player.SetSkinId(0);
                     break;
                 case 2:
-                    _Player.SetSkinId(2);
+                    _Player.SetSkinId(1);
                     break;
                 case 3:
-                    _Player.SetSkinId(3);
+                    _Player.SetSkinId(2);
                     break;
             }
         }
