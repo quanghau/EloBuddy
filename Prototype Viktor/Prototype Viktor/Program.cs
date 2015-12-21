@@ -150,6 +150,11 @@ namespace Protype_Viktor
         {
             get { return ViktorMiscMenu["RTickSlider"].Cast<Slider>().CurrentValue; }
         }
+
+        private static int _SkinChanger
+        {
+            get { return ViktorMiscMenu["SkinChanger"].Cast<Slider>().CurrentValue; }
+        }
         private static HitChance PredictionRate
         {
             get
@@ -182,6 +187,7 @@ namespace Protype_Viktor
 
             LoadSkills();
             LoadMenu();
+            SelectSkin();
 
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
@@ -333,10 +339,11 @@ namespace Protype_Viktor
             ViktorMiscMenu.AddLabel("[Misc Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
             ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
-            ViktorMiscMenu.AddSeparator(20);
+            ViktorMiscMenu.AddSeparator(10);
             ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
             ViktorMiscMenu.AddLabel("*Lower is better, but I think 250 is optimal.");
-
+            ViktorMiscMenu.AddSeparator(10);
+            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin Select:",1,1,3));
 
 
         }
@@ -559,6 +566,22 @@ namespace Protype_Viktor
                 dmg += (45 + _Player.TotalMagicalDamage * 0.10) * ticks;
 
             return dmg;
+        }
+
+        private static void SelectSkin()
+        {
+            switch (_SkinChanger)
+            {
+                case 1:
+                    _Player.SetSkinId(1);
+                    break;
+                case 2:
+                    _Player.SetSkinId(2);
+                    break;
+                case 3:
+                    _Player.SetSkinId(3);
+                    break;
+            }
         }
 
 
