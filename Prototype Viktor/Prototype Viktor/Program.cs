@@ -589,7 +589,7 @@ namespace Protype_Viktor
                     _Player.SetSkinId(2);
                     break;
                 case 4:
-                    _Player.SetSkinId((3));
+                    _Player.SetSkinId(3);
                     break;
             }
         }
