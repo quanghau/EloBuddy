@@ -211,7 +211,7 @@ namespace Protype_Viktor
 
             if (_AutoFollowR)
             {
-                if (R.Name != "ViktorChaosStorm" && Environment.TickCount >= _tick + 150) // && Environment.TickCount - _tick > 0
+                if (R.Name != "ViktorChaosStorm" && Environment.TickCount >= _tick + 50) // && Environment.TickCount - _tick > 0
                 {
                     var stormT = TargetSelector.GetTarget(2000, DamageType.Magical); //lower range.
                     if (stormT != null && stormT.IsValid && stormT.IsVisible)
