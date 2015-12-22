@@ -211,19 +211,18 @@ namespace Protype_Viktor
 
             if (_AutoFollowR)
             {
-                if ((_Player.HasBuff("Glory") || R.Name == "GuideSingularity" || R.Name != "ViktorChaosStorm")) // && Environment.TickCount - _tick > 0
+                if (R.Name != "ViktorChaosStorm" && Environment.TickCount >= _tick + 150) // && Environment.TickCount - _tick > 0
                 {
                     var stormT = TargetSelector.GetTarget(2000, DamageType.Magical); //lower range.
                     if (stormT != null && stormT.IsValid && stormT.IsVisible)
                     {
                         R.Cast(stormT.ServerPosition);
-                        //_tick = Environment.TickCount + _RTickSlider;
+                        _tick = Environment.TickCount;
                     }
                     if (stormT == null && _FollowRViktor)
                     {
                         R.Cast(_Player.ServerPosition);
-                        
-                        //_tick = Environment.TickCount + _RTickSlider;
+                        _tick = Environment.TickCount;
                     }
                 }
             }
@@ -521,7 +520,7 @@ namespace Protype_Viktor
         {
             if (!Ignite.IsReady()) return;
             var target = TargetSelector.GetTarget(Ignite.Range, DamageType.True);
-            if (target != null && (!target.IsZombie || !target.IsInvulnerable))
+            if (target != null && !target.IsZombie && !target.IsInvulnerable)
             {   //Overkill Protection
                 if (target.Health > PredictDamage(target) && target.Health <= PredictDamage(target) + _Player.GetSummonerSpellDamage(target, DamageLibrary.SummonerSpells.Ignite))
                 {
@@ -575,7 +574,7 @@ namespace Protype_Viktor
             return dmg;
         }
 
-        private static void SelectSkin(int skn )
+        private static void SelectSkin(int skn)
         {
             switch (skn)
             {
