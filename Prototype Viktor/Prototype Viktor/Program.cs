@@ -303,7 +303,6 @@ namespace Protype_Viktor
             ViktorMenu.AddLabel("*Killsteal Objectives (Baron/Dragon/Buffs)");
             ViktorMenu.AddLabel("*Auto Cast R on dangerous Spells");
 
-
             ViktorComboMenu = ViktorMenu.AddSubMenu("Combo", "Combo");
             ViktorComboMenu.AddLabel("[Combo Settings]");
             ViktorComboMenu.Add("UseQ", new CheckBox("Use Q"));
@@ -334,7 +333,6 @@ namespace Protype_Viktor
             ViktorHarassMenu.AddLabel("[Harass Mana Settings]");
             ViktorHarassMenu.Add("HarassMana", new Slider("Minimum mana for Harassment Mode (%):", 30, 1, 100));
 
-
             ViktorLaneClearMenu = ViktorMenu.AddSubMenu("Lane Clear", "LaneClear");
             ViktorLaneClearMenu.AddLabel("[LaneClear Settings]");
             ViktorLaneClearMenu.Add("LaneClearQ", new CheckBox("Use Q"));
@@ -363,8 +361,6 @@ namespace Protype_Viktor
             ViktorMiscMenu.AddSeparator(10);
             ViktorMiscMenu.AddLabel("[Skin Selector]");
             ViktorMiscMenu.Add("SkinChanger",new Slider("Skin ID:",1,1,4));
-
-
         }
         #endregion
 
@@ -446,17 +442,11 @@ namespace Protype_Viktor
                 {
                     CastE();
                 }
-                /*
-                else if (_KsQ && target.IsValidTarget(Q.Range) && target.Health < (_Player.GetSpellDamage(target, SpellSlot.E) + _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg()))
-                {
-                    CastE();
-                    Core.DelayAction(CastQ, 50);
-                }*/
+
                 if (_KsQ && target.IsValidTarget(Q.Range) &&
                     target.Health < _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg())
                 {
                     CastQ();
-
                 }
             }
         }
@@ -474,10 +464,8 @@ namespace Protype_Viktor
         private static void CastW()
         {
             var target = TargetSelector.GetTarget(W.Range, DamageType.Magical);
-            if (target != null)
+            if (target != null && target.CountEnemiesInRange(W.Width) >= _MinW)
             {
-                if (target.CountEnemiesInRange(W.Width) >= _MinW)
-
                     W.Cast(target);
             }
         }
