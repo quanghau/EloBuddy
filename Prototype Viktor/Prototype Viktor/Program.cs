@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -182,7 +183,7 @@ namespace Protype_Viktor
             if (bIgnite)
             {
                 Ignite = new Spell.Targeted(_Player.GetSpellSlotFromName("summonerdot"), 600);
-                Console.WriteLine("Ignite Loaded!");
+                Console.WriteLine("Ignite Found! " + Ignite.Slot);
             }
 
             LoadSkills();
@@ -292,16 +293,19 @@ namespace Protype_Viktor
         {
             ViktorMenu = MainMenu.AddMenu("Prototype Viktor", "Viktor");
             ViktorMenu.AddGroupLabel("[Prototype Viktor Info]");
-            ViktorMenu.AddLabel("Beta Viktor Addon. Made by Tear for EloBuddy!");
-            ViktorMenu.AddLabel("Before you play, please adjust your settings in Menu.");
+            ViktorMenu.AddLabel("Viktor Addon. Made by Tear for Elobuddy!");
             ViktorMenu.AddLabel("Please, report any bugs in forums.");
-            ViktorMenu.AddLabel("Work In Progress:");
-            ViktorMenu.AddLabel("*Auto Ignite in Combo");
-            ViktorMenu.AddLabel("*Killsteal Dragon/Baron");
-            ViktorMenu.AddLabel("*Improve Damage Calculations");
+            ViktorMenu.AddLabel("If you enjoy this Addon dont forget to Upvote!");
+            ViktorMenu.AddSeparator(20);
+            ViktorMenu.AddLabel("[Work In Progress]");
+            ViktorMenu.AddSeparator(10);
+            ViktorMenu.AddLabel("*Improve Lane Clear");
+            ViktorMenu.AddLabel("*Killsteal Objectives (Baron/Dragon/Buffs)");
+            ViktorMenu.AddLabel("*Auto Cast R on dangerous Spells");
+
 
             ViktorComboMenu = ViktorMenu.AddSubMenu("Combo", "Combo");
-            ViktorComboMenu.AddLabel("[Combo Settings:]");
+            ViktorComboMenu.AddLabel("[Combo Settings]");
             ViktorComboMenu.Add("UseQ", new CheckBox("Use Q"));
             ViktorComboMenu.Add("UseW", new CheckBox("Use W", false));
             ViktorComboMenu.Add("UseE", new CheckBox("Use E"));
@@ -311,31 +315,39 @@ namespace Protype_Viktor
             ViktorComboMenu.Add("FollowRViktor", new CheckBox("Auto Follow R (Enemies&Viktor)", false));
             ViktorComboMenu.Add("CheckR", new CheckBox("Cast R only if enemy is killable with Combo"));
             ViktorComboMenu.AddSeparator(10);
-            ViktorComboMenu.AddLabel("[KillSteal Options:]");
+            ViktorComboMenu.AddLabel("[KillSteal Options]");
             ViktorComboMenu.Add("EnableKS", new CheckBox("Enable KillSteal"));
             ViktorComboMenu.Add("KsQ", new CheckBox("KillSteal with Q"));
             ViktorComboMenu.Add("KsE", new CheckBox("KillSteal with E"));
             ViktorComboMenu.AddSeparator(10);
-            ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies to cast W:", 2, 1, 5));
-            ViktorComboMenu.Add("MinEnemiesR", new Slider("Minimum Enemies to cast R", 1, 1, 5)); //
+            ViktorComboMenu.AddLabel("[Misc Combo Settings]");
+            ViktorComboMenu.Add("MinW", new Slider("Mininum Enemies(x) to cast W:", 2, 1, 5));
+            ViktorComboMenu.Add("MinEnemiesR", new Slider("Minimum Enemies(x) to cast R:", 1, 1, 5)); //
             ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calculate in Damage Output:", 10, 1, 14));
-            ViktorComboMenu.Add("PredictionRate", new Slider("Prediction Rate:", 3, 1, 3));
+            ViktorComboMenu.Add("PredictionRate", new Slider("Prediction HitChance:", 3, 1, 3));
 
             ViktorHarassMenu = ViktorMenu.AddSubMenu("Harass", "Harass");
-            ViktorHarassMenu.AddLabel("[Harass Settings:]");
+            ViktorHarassMenu.AddLabel("[Harass Settings]");
             ViktorHarassMenu.Add("HarassQ", new CheckBox("Use Q"));
             ViktorHarassMenu.Add("HarassE", new CheckBox("Use E"));
-            ViktorHarassMenu.AddSeparator(15);
-            ViktorHarassMenu.Add("HarassMana", new Slider("Mana for Harassment (%):", 30, 1, 100));
+            ViktorHarassMenu.AddSeparator(10);
+            ViktorHarassMenu.AddLabel("[Harass Mana Settings]");
+            ViktorHarassMenu.Add("HarassMana", new Slider("Minimum mana for Harassment Mode (%):", 30, 1, 100));
 
 
             ViktorLaneClearMenu = ViktorMenu.AddSubMenu("Lane Clear", "LaneClear");
-            ViktorLaneClearMenu.Add("LaneClearQ", new CheckBox("Use Q in Lane Clear "));
-            ViktorLaneClearMenu.Add("LaneClearE", new CheckBox("Use E in Lane Clear"));
-            ViktorLaneClearMenu.Add("LaneClearMana", new Slider("Mana (%):", 40, 0, 100));
-            ViktorLaneClearMenu.Add("MinMinions", new Slider("Minimum Minions to use E", 3, 1, 10));
+            ViktorLaneClearMenu.AddLabel("[LaneClear Settings]");
+            ViktorLaneClearMenu.Add("LaneClearQ", new CheckBox("Use Q"));
+            ViktorLaneClearMenu.Add("LaneClearE", new CheckBox("Use E "));
+            ViktorLaneClearMenu.AddSeparator(5);
+            ViktorLaneClearMenu.Add("LaneClearMana", new Slider("Minimum mana for LaneClear Mode (%):", 40, 0, 100));
+            ViktorLaneClearMenu.Add("MinMinions", new Slider("Minimum Minions(x) to use E in LaneClear Mode:", 3, 1, 10));
 
             ViktorDrawMenu = ViktorMenu.AddSubMenu("Drawings", "Drawings");
+            ViktorDrawMenu.AddLabel("[Drawings Settings]");
+            ViktorDrawMenu.Add("DisableDraws", new CheckBox("Disable All Drawings",false));
+            ViktorDrawMenu.AddSeparator(10);
+            ViktorDrawMenu.AddLabel("[Skill Settings]");
             ViktorDrawMenu.Add("DrawQ", new CheckBox("Draw Q"));
             ViktorDrawMenu.Add("DrawW", new CheckBox("Draw W"));
             ViktorDrawMenu.Add("DrawE", new CheckBox("Draw E"));
@@ -344,12 +356,13 @@ namespace Protype_Viktor
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
             ViktorMiscMenu.AddLabel("[Misc Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
-            ViktorMiscMenu.AddLabel("* Anti Gapcloser will cast (W) on Viktor's position");
+            ViktorMiscMenu.AddLabel("Anti Gapcloser will cast (W) on Viktor's position");
             ViktorMiscMenu.AddSeparator(10);
             ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
-            ViktorMiscMenu.AddLabel("*Lower is better, but I think 250 is optimal.");
+            ViktorMiscMenu.AddLabel("*Lower is better, 250 is optimal.");
             ViktorMiscMenu.AddSeparator(10);
-            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin Select:",1,1,4));
+            ViktorMiscMenu.AddLabel("[Skin Selector]");
+            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin ID:",1,1,4));
 
 
         }
