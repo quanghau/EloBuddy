@@ -418,7 +418,8 @@ namespace Protype_Viktor
 
         private static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            if (_GapCloser && (e.End.Distance(_Player) <= 170) && sender.IsEnemy) //fix?
+            if (sender.IsAlly || !_GapCloser) return;
+            if (e.End.Distance(_Player) <= 170)
                 W.Cast(_Player);
         }
 
