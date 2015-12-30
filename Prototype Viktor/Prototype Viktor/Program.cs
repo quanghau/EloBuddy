@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
 using SharpDX;
-using System.Reflection;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
@@ -20,6 +16,7 @@ namespace Protype_Viktor
     {
         #region Variables
         public static AIHeroClient _Player { get { return ObjectManager.Player; } }
+        private static List<string> DangerousEnemies = new List<string>() { "Amumu", "Lissandra", "Thresh", "Blitzcrank", "MissFortune" };
         private static Spell.Targeted Q, Ignite;
         private static bool bIgnite;
         private static Spell.Skillshot W, E, R;
@@ -28,7 +25,7 @@ namespace Protype_Viktor
         private static Vector3 startPos;
         private static Menu ViktorMenu;
         private static Menu ViktorComboMenu, ViktorHarassMenu, ViktorLaneClearMenu, ViktorMiscMenu, ViktorDrawMenu;
-        private static string version = "0.0.0.12";
+        private static readonly string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         #endregion
 
         #region PropertyChecks
@@ -156,6 +153,12 @@ namespace Protype_Viktor
         {
             get { return ViktorMiscMenu["SkinChanger"].Cast<Slider>(); }
         }
+
+        private static bool _AdvancedGapClose
+        {
+            get { return ViktorMiscMenu["AdvancedGapClose"].Cast<CheckBox>().CurrentValue; }
+        }
+
         private static HitChance PredictionRate
         {
             get
@@ -188,18 +191,31 @@ namespace Protype_Viktor
 
             LoadSkills();
             LoadMenu();
+
+            for (int i = 0; i < DangerousEnemies.Count; i++)
+            {
+                var bCheck = EntityManager.Heroes.Enemies.FirstOrDefault(a => a.ChampionName == DangerousEnemies[i]) != null;
+                if (bCheck)
+                    ViktorMiscMenu.Add(DangerousEnemies[i], new CheckBox(DangerousEnemies[i], false));
+            }
+
+
+
+
             SelectSkin(_SkinChanger.CurrentValue);
 
-            _SkinChanger.OnValueChange += delegate(ValueBase<int> s, ValueBase<int>.ValueChangeArgs aargs)
+            _SkinChanger.OnValueChange += delegate (ValueBase<int> s, ValueBase<int>.ValueChangeArgs aargs)
             {
                 SelectSkin(aargs.NewValue);
             };
-            
+
 
 
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
+            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Drawing.OnDraw += Drawing_OnDraw;
+
 
             Chat.Print("Prototype Viktor " + version + " Loaded!");
             Console.WriteLine("Prototype Viktor " + version + " Loaded!");
@@ -212,7 +228,7 @@ namespace Protype_Viktor
 
             if (_AutoFollowR)
             {
-                if (R.Name != "ViktorChaosStorm" && Environment.TickCount >= _tick + 50) // && Environment.TickCount - _tick > 0
+                if (R.Name != "ViktorChaosStorm" && Environment.TickCount >= _tick + _RTickSlider) // && Environment.TickCount - _tick > 0
                 {
                     var stormT = TargetSelector.GetTarget(2000, DamageType.Magical); //lower range.
                     if (stormT != null && stormT.IsValid && stormT.IsVisible)
@@ -229,24 +245,6 @@ namespace Protype_Viktor
             }
 
             KillSecure();
-            /*
-            switch (Orbwalker.ActiveModesFlags)
-            {
-                case Orbwalker.ActiveModes.Combo:
-                    Combo();
-                    break;
-                case Orbwalker.ActiveModes.Harass:
-                    Harass();
-                    break;
-                case Orbwalker.ActiveModes.LaneClear:
-                    LaneClear();
-                    break;
-                case Orbwalker.ActiveModes.JungleClear:
-                    JungleClear();
-                    break;
-            }
-            */
-            //Trying to locate the Auto E-R-bug
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
             else if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
@@ -343,7 +341,7 @@ namespace Protype_Viktor
 
             ViktorDrawMenu = ViktorMenu.AddSubMenu("Drawings", "Drawings");
             ViktorDrawMenu.AddLabel("[Drawings Settings]");
-            ViktorDrawMenu.Add("DisableDraws", new CheckBox("Disable All Drawings",false));
+            ViktorDrawMenu.Add("DisableDraws", new CheckBox("Disable All Drawings", false));
             ViktorDrawMenu.AddSeparator(10);
             ViktorDrawMenu.AddLabel("[Skill Settings]");
             ViktorDrawMenu.Add("DrawQ", new CheckBox("Draw Q"));
@@ -352,15 +350,21 @@ namespace Protype_Viktor
             ViktorDrawMenu.Add("DrawR", new CheckBox("Draw R"));
 
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
-            ViktorMiscMenu.AddLabel("[Misc Settings]");
+            ViktorMiscMenu.AddLabel("[Skin Selector]");
+            ViktorMiscMenu.Add("SkinChanger", new Slider("Skin ID:", 1, 1, 4));
+            ViktorMiscMenu.AddSeparator(10);
+            ViktorMiscMenu.Add("RTickSlider", new Slider("R Follow Speed (ms):", 50, 10, 100));
+            ViktorMiscMenu.AddLabel("*Lower is better, 50 is optimal.");
+            ViktorMiscMenu.AddSeparator(10);
+            ViktorMiscMenu.AddLabel("[Gapcloser Settings]");
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
             ViktorMiscMenu.AddLabel("Anti Gapcloser will cast (W) on Viktor's position");
             ViktorMiscMenu.AddSeparator(10);
-            ViktorMiscMenu.Add("RTickSlider", new Slider("How fast R will move to the next Target:", 250, 100, 500));
-            ViktorMiscMenu.AddLabel("*Lower is better, 250 is optimal.");
-            ViktorMiscMenu.AddSeparator(10);
-            ViktorMiscMenu.AddLabel("[Skin Selector]");
-            ViktorMiscMenu.Add("SkinChanger",new Slider("Skin ID:",1,1,4));
+            ViktorMiscMenu.AddLabel("[Advanced Gapcloser Settings]");
+            ViktorMiscMenu.AddLabel("(Disable this option if you're using Evade Addons!)");
+            ViktorMiscMenu.Add("AdvancedGapClose", new CheckBox("Advanced Gapcloser (W)", false));
+            ViktorMiscMenu.AddLabel("Available Champions");
+
         }
         #endregion
 
@@ -432,6 +436,29 @@ namespace Protype_Viktor
                 W.Cast(_Player);
         }
 
+        private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (!_AdvancedGapClose || !W.IsReady() || sender.IsAlly) return;
+
+            // Console.WriteLine("Enemy casted skill: " + args.SData.Name);
+            var xd = InterruptSkills(args.SData.Name);
+            if (xd.Item1)
+            {
+
+                if (xd.Item3 == "GapcloseSkill" && args.End.Distance(_Player.Position) <= 100)
+                {
+                    //Console.WriteLine("Self Cast. Skill: " + args.SData.Name);
+                    W.Cast(_Player);
+                }
+
+                else if (xd.Item3 == "InterruptSkill")
+                {
+                    // Console.WriteLine("Enemy Cast. Skill: " + args.SData.Name);
+                    W.Cast(sender.ServerPosition);
+                }
+            }
+        }
+
         private static void KillSecure()
         {
             if (!_KillSteal) return;
@@ -466,7 +493,7 @@ namespace Protype_Viktor
             var target = TargetSelector.GetTarget(W.Range, DamageType.Magical);
             if (target != null && target.CountEnemiesInRange(W.Width) >= _MinW)
             {
-                    W.Cast(target);
+                W.Cast(target);
             }
         }
 
@@ -553,14 +580,12 @@ namespace Protype_Viktor
             return dmg;
         }
 
-
         private static double CalculateAADmg()
         {
             double[] AAdmg = new double[] { 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90, 110, 130, 150, 170, 190, 210 };
 
             return (double)AAdmg[_Player.Level - 1] + _Player.TotalMagicalDamage * 0.5 + _Player.TotalAttackDamage;
         }
-
 
         private static double CalculateRTickDmg(AIHeroClient t, int ticks)
         {
@@ -576,8 +601,29 @@ namespace Protype_Viktor
             return dmg;
         }
 
+        private static Tuple<bool, string, string> InterruptSkills(string skillName)
+        {
+            switch (skillName)
+            {
+                case "BandageToss":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["Amumu"].Cast<CheckBox>().CurrentValue, "Amumu", "GapcloseSkill"); //_Player position
+                case "KhazixE":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["Kha'Zix"].Cast<CheckBox>().CurrentValue, "Kha'Zix", "GapcloseSkill");
+                case "LissandraE":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["Lissandra"].Cast<CheckBox>().CurrentValue, "Lissandra", "GapcloseSkill");
+                case "ThreshQ":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["Thresh"].Cast<CheckBox>().CurrentValue, "Thresh", "InterruptSkill");
+                case "MissFortuneBulletTime":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["MissFortune"].Cast<CheckBox>().CurrentValue, "MissFortune", "InterruptSkill"); //Enemy position
+                case "RocketGrab":
+                    return new Tuple<bool, string, string>(ViktorMiscMenu["Blitzcrank"].Cast<CheckBox>().CurrentValue, "Blitzcrank", "InterruptSkill");
+            }
+            return new Tuple<bool, string, string>(false, "", "");
+        }
+
         private static void SelectSkin(int skn)
         {
+            if (_Player.SkinId == skn) return;
             switch (skn)
             {
                 case 1:
