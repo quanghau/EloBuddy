@@ -271,7 +271,7 @@ namespace Protype_Viktor
         #region Drawings
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (!ViktorDrawMenu["DisableDraws"].Cast<CheckBox>().CurrentValue)
+            if (ViktorDrawMenu["DisableDraws"].Cast<CheckBox>().CurrentValue == false)
             { 
 
             if (_DrawQ && Q.IsReady())
