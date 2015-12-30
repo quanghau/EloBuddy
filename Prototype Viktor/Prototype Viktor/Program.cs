@@ -271,7 +271,8 @@ namespace Protype_Viktor
         #region Drawings
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (!ViktorDrawMenu["DisableDraws"].Cast<CheckBox>().CurrentValue) return;
+            if (!ViktorDrawMenu["DisableDraws"].Cast<CheckBox>().CurrentValue)
+            { 
 
             if (_DrawQ && Q.IsReady())
                 Circle.Draw(Color.Aqua, Q.Range, _Player.Position);
@@ -281,6 +282,7 @@ namespace Protype_Viktor
                 Circle.Draw(Color.HotPink, EMaxRange, _Player.Position);
             if (_DrawR && R.IsReady())
                 Circle.Draw(Color.Gray, R.Range, _Player.Position);
+            }
             /*
             if (E.IsReady())
                 Circle.Draw(Color.HotPink, 6, 40, startPos);
