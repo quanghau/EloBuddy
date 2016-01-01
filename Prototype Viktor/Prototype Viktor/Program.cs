@@ -326,11 +326,6 @@ namespace Protype_Viktor
             ViktorComboMenu.Add("MinEnemiesR", new Slider("Minimum Enemies(x) to cast R:", 1, 1, 5)); //
             ViktorComboMenu.Add("RTicks", new Slider("R Ticks (per 0.5s) to calculate in Damage Output:", 10, 1, 14));
             ViktorComboMenu.Add("PredictionRate", new Slider("Prediction HitChance:", 3, 1, 3));
-            ViktorComboMenu.AddLabel("[TeamFights Ulti Settings]");
-            ViktorComboMenu.Add("AdvancedTeamFight", new CheckBox("Enable TeamFights Ulti(R) cast", false));
-            ViktorComboMenu.Add("MinTeamFights", new Slider("Minimum Enemies(x) in Range to Cast (R):", 3, 2, 5));
-            ViktorComboMenu.AddLabel("This option will override Damage ouput calculations and Radius checks for Viktor's Ulti(R)");
-            ViktorComboMenu.AddLabel("It will cast ulti, if (x) number of enemies are within Viktor's range.");
 
             ViktorHarassMenu = ViktorMenu.AddSubMenu("Harass", "Harass");
             ViktorHarassMenu.AddLabel("[Harass Settings]");
@@ -541,7 +536,7 @@ namespace Protype_Viktor
             {
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
- 
+                //Chat.Print("Target Health: " + target.Health + "Predict Dmg: " + predictDmg);
                 if (target.HealthPercent > 5 && _CheckR && prediction.HitChance >= HitChance.High)
                 {
                     if (target.Health <= predictDmg)
@@ -550,17 +545,6 @@ namespace Protype_Viktor
                 else if (target.HealthPercent > 5 && !_CheckR && prediction.HitChance >= HitChance.High)
                 {
                     R.Cast(target);
-                }
-            }
-            else if (ViktorComboMenu["AdvancedTeamFight"].Cast<CheckBox>().CurrentValue && _Player.CountEnemiesInRange(1200) >= ViktorComboMenu["MinTeamFights"].Cast<Slider>().CurrentValue && R.Name == "ViktorChaosStorm")
-            {
-
-                var targets = EntityManager.Heroes.Enemies.OrderBy(x => x.Health - PredictDamage(x)).Where(x => x.IsValidTarget(1200) && !x.IsZombie);
-
-                foreach (var ultiT in targets)
-                {
-                    R.Cast(ultiT);
-                    //Console.WriteLine("R2 Casted to Target: " + ultiT.ChampionName);
                 }
             }
         }
