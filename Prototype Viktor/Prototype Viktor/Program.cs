@@ -411,7 +411,7 @@ namespace Protype_Viktor
                         Player.CastSpell(SpellSlot.E, loc.CastPosition, minion.ServerPosition);
                         // Chat.Print("Minions in Lane: " + minions.Count() + "Mininum minions to cast E: " + _MinMinions);
                     }
-                    if (_LaneClearQ && minion.Health < _Player.GetSpellDamage(minion, SpellSlot.Q) + CalculateAADmg())
+                    if (_LaneClearQ)
                     {
                         Q.Cast(minion);
                     }
