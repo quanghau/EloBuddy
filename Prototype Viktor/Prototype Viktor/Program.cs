@@ -560,7 +560,6 @@ namespace Protype_Viktor
                 foreach (var ultiT in targets)
                 {
                     R.Cast(ultiT);
-                    Console.WriteLine("R2 Casted to Target: " + ultiT.ChampionName);
                 }
             }
         }
