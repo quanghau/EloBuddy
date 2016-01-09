@@ -135,7 +135,7 @@ namespace Prototype_Lulu
                            // Console.WriteLine("Protected Ally: " + ally.ChampionName);
                         }
                     }
-                    else if (!SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Protector", "ProtectorUseR") &&
+                    else if ((!SpellFactory.E.IsReady() || !Program._Player.IsInRange(ally,SpellFactory.E.Range)) && Config.ReturnBoolMenu("Protector", "ProtectorUseR") &&
                              Program._Player.CountEnemiesInRange(800) > 0)
                     {
                         if (Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB") &&
