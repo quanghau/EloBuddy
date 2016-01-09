@@ -65,7 +65,7 @@ namespace Prototype_Lulu
                     {
                         if (SpellProtectDB.AvoidSpells[sender.BaseSkinName].Contains(args.SData.Name))
                             if (Config.LuluAutoShieldMenu[args.SData.Name].Cast<CheckBox>().CurrentValue)
-                            SpellFactory.E.Cast(Program._Player);
+                            SpellFactory.E.Cast(ally);
                     }
                 }
             }
