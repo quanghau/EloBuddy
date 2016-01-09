@@ -113,7 +113,7 @@ namespace Prototype_Lulu
                     SpellFactory.E.Cast(Program._Player);
                 if (ally.IsMe && Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB"))
                 {
-                    if (ally.HealthPercent <= 40 && ally.CountEnemiesInRange(600) > 0)
+                    if (ally.HealthPercent <= 40 && ally.CountEnemiesInRange(700) > 0)
                         SpellFactory.E.Cast(Program._Player);
 
                     if (!SpellFactory.E.IsReady() && ally.HealthPercent <= Config.ReturnIntMenu("Protector", ally.ChampionName + "SL"))
@@ -123,7 +123,7 @@ namespace Prototype_Lulu
                 {
 
                     if (SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Protector", "ProtectorUseE") &&
-                        ally.CountEnemiesInRange(600) > 0)
+                        ally.CountEnemiesInRange(700) > 0)
                     {
                         //Splitted (if) to nested to increase performance ?
                         if (Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB"))
