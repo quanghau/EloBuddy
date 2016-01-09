@@ -14,6 +14,7 @@ namespace Prototype_Lulu
     static class Config
     {
         public static void Initialize() { }
+        public static Menu LuluAutoShieldMenu;
         private static Menu LuluMainMenu, LuluComboMenu, LuluHarrasMenu, LuluProtectorMenu, LuluMiscMenu, LuluDrawingsMenu;
 
         static Config()
@@ -59,6 +60,26 @@ namespace Prototype_Lulu
             {
                 LuluProtectorMenu.Add(protectTarget.ChampionName + "CB", new CheckBox("Protect " + protectTarget.ChampionName, false));
                 LuluProtectorMenu.Add(protectTarget.ChampionName + "SL", new Slider(protectTarget.ChampionName + " Minimum HP to cast Ulti(R) (%):", 20, 1, 100));
+            }
+
+            LuluAutoShieldMenu = LuluMainMenu.AddSubMenu("Auto Shield", "Auto Shield");
+            LuluAutoShieldMenu.AddLabel("[Auto Shield Settings]");
+            LuluAutoShieldMenu.Add("AShield", new CheckBox("Enable Auto Shield", false));
+            LuluAutoShieldMenu.Add("AShieldMana", new Slider("Minimum Mana for Auto (E)", 50, 1, 100));
+            foreach (var enemy in EntityManager.Heroes.Enemies)
+            {
+                if (SpellProtectDB.AvoidSpells.ContainsKey(enemy.ChampionName))
+                {
+                    LuluAutoShieldMenu.AddLabel(enemy.ChampionName);
+                    foreach (var xd in SpellProtectDB.AvoidSpells[enemy.ChampionName])
+                    {
+                        LuluAutoShieldMenu.Add(xd, new CheckBox(xd, false));
+                    }
+
+
+                }
+
+
             }
 
             LuluMiscMenu = LuluMainMenu.AddSubMenu("Misc", "Misc");
