@@ -24,7 +24,7 @@ namespace Prototype_Lulu
             LuluComboMenu = LuluMainMenu.AddSubMenu("Combo", "Combo");
             LuluComboMenu.AddLabel("[Combo Settings]");
             LuluComboMenu.Add("UseQ", new CheckBox("Use Q"));
-            LuluComboMenu.Add("UseW", new CheckBox("Use W"));
+            LuluComboMenu.Add("UseW", new CheckBox("Use W",false));
             LuluComboMenu.Add("UseE", new CheckBox("Use E"));
             LuluComboMenu.Add("UseR", new CheckBox("Use R"));
             LuluComboMenu.Add("UseIgnite", new CheckBox("Use Ignite"));
