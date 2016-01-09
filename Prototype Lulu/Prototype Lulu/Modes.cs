@@ -129,7 +129,7 @@ namespace Prototype_Lulu
                         if (Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB"))
                         {
                             SpellFactory.E.Cast(ally);
-                            Console.WriteLine("Protected Ally: " + ally.ChampionName);
+                           // Console.WriteLine("Protected Ally: " + ally.ChampionName);
                         }
                     }
                     else if (!SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Protector", "ProtectorUseR") &&
@@ -139,7 +139,7 @@ namespace Prototype_Lulu
                             ally.HealthPercent <= Config.ReturnIntMenu("Protector", ally.ChampionName + "SL"))
                         {
                             SpellFactory.R.Cast(ally);
-                            Console.WriteLine("Protected Ally: " + ally.ChampionName);
+                            //Console.WriteLine("Protected Ally: " + ally.ChampionName);
                         }
                     }
                 }
