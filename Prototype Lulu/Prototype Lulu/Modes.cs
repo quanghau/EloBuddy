@@ -70,9 +70,12 @@ namespace Prototype_Lulu
 
             foreach (var minion in minions)
             {
+                if (minions.Count() >= 3)
+                { 
 
                 var loc = EntityManager.MinionsAndMonsters.GetLineFarmLocation(minions, SpellFactory.Q.Width, (int)SpellFactory.Q.Range);
                 SpellFactory.Q.Cast(loc.CastPosition);
+                }
 
             }
         }

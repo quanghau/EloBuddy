@@ -53,7 +53,7 @@ namespace Prototype_Lulu
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (Program._Player.ManaPercent < Config.LuluAutoShieldMenu["AShieldMana"].Cast<Slider>().CurrentValue)
+            if (Program._Player.ManaPercent < Config.LuluAutoShieldMenu["AShieldMana"].Cast<Slider>().CurrentValue || !Config.LuluAutoShieldMenu["AShield"].Cast<CheckBox>().CurrentValue)
                 return;
             if (sender.IsAlly) return;
             foreach (var ally in EntityManager.Heroes.Allies.Where(x => Program._Player.IsInRange(x, SpellFactory.E.Range)))
