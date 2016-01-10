@@ -447,11 +447,13 @@ namespace Protype_Viktor
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!_AdvancedGapClose || !W.IsReady() || sender.IsAlly) return;
+            if (!_AdvancedGapClose || !W.IsReady()) return;
+            if (sender.IsMe && args.SData.Name.ToLower().Contains("viktorpowertransferreturn"))
+              Core.DelayAction(Orbwalker.ResetAutoAttack, 230);
 
             // Console.WriteLine("Enemy casted skill: " + args.SData.Name);
             var xd = InterruptSkills(args.SData.Name);
-            if (xd.Item1)
+            if (xd.Item1 && sender.IsEnemy)
             {
 
                 if (xd.Item3 == "GapcloseSkill" && args.End.Distance(_Player.Position) <= 100)
