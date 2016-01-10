@@ -51,13 +51,13 @@ namespace Prototype_Lulu
         {
             if (Program._Player.ManaPercent <= Config.ReturnIntMenu("Harras", "HarrasManaSlider")) return;
 
-            if (SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Combo", "UseE")) SpellFactory.CastE();
-            if (SpellFactory.Q.IsReady() && Config.ReturnBoolMenu("Combo", "UseQ"))
+            if (SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Harras", "HarrasE")) SpellFactory.CastE();
+            if (SpellFactory.Q.IsReady() && Config.ReturnBoolMenu("Harras", "HarrasQ"))
             {
                 var target = TargetSelector.GetTarget(1600, DamageType.Magical);
                 if (target.IsValidTarget(SpellFactory.Q.Range) && !target.IsZombie && !target.IsInvulnerable)
                     SpellFactory.CastQ(target);
-                else if (target.IsValidTarget(1600) && !target.IsZombie && !target.IsInvulnerable)
+                else if (target.IsValidTarget(1600) && Config.ReturnBoolMenu("Harras", "HarrasQE") && !target.IsZombie && !target.IsInvulnerable)
                     SpellFactory.CastQ2(target);
             }
 
