@@ -413,7 +413,7 @@ namespace Protype_Viktor
                     }
                     if (_LaneClearQ && minion.IsValidTarget(Q.Range))
                     {
-                        Core.DelayAction(delegate { Q.Cast(minion); }, 50);
+                        Core.DelayAction(() => Q.Cast(minion), 50);
                     }
                 }
             }
@@ -432,7 +432,7 @@ namespace Protype_Viktor
                 }
                 if (_LaneClearQ && minion.Health < _Player.GetSpellDamage(minion, SpellSlot.Q) + CalculateAADmg())
                 {
-                    Core.DelayAction(delegate { Q.Cast(minion); }, 50);
+                    Core.DelayAction(() => Q.Cast(minion), 50);
                 }
             }
 
