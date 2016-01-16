@@ -72,7 +72,6 @@ namespace Prototype_Lulu
                         E.Cast(min);
                         var pred = Q.GetPrediction(_t);
                         Q2.SourcePosition = Program.pixie.Position;
-                        Q.SourcePosition = Program.pixie.Position;
 
                         Q2.Cast(pred.CastPosition);
                         Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
@@ -91,8 +90,9 @@ namespace Prototype_Lulu
                         // Chat.Print("Distance: " + min.Distance(_t));
                         E.Cast(min);
                         var pred = Q.GetPrediction(_t);
-                        Q.SourcePosition = Program.pixie.Position;
+
                         Q2.SourcePosition = Program.pixie.Position;
+
                         Q2.Cast(pred.CastPosition);
                         Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
                        
