@@ -71,12 +71,16 @@ namespace Prototype_Lulu
                 return;
 
             var minions = EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Minion, EntityManager.UnitTeam.Enemy, Program._Player.Position, SpellFactory.Q.Range, false);
-
-            if (minions.Count() >= Config.LuluLaneclearMenu["LaneclearMinions"].Cast<Slider>().CurrentValue)
+            foreach (var minion in minions)
+            {
+                if (minions.Count() >= Config.LuluLaneclearMenu["LaneclearMinions"].Cast<Slider>().CurrentValue)
              { 
                var loc = EntityManager.MinionsAndMonsters.GetLineFarmLocation(minions, SpellFactory.Q.Width, (int)SpellFactory.Q.Range);
                SpellFactory.Q.Cast(loc.CastPosition);
              }
+
+            }
+
         }
 
         private static void Flee()

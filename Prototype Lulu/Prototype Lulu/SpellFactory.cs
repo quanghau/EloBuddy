@@ -66,15 +66,16 @@ namespace Prototype_Lulu
                         .Where(x => x.IsValidTarget(E.Range) && x.Distance(Program._Player.Position) <= Q.Range)
                         .OrderBy(y => y.Distance(_t.ServerPosition)))
                 {
-                    if (min.Distance(_t) <= (float)Q.Range - 120)
+                    if (min.Distance(_t) <= (float)Q.Range - 100)
                     {
                         // Chat.Print("Distance: " + min.Distance(_t));
                         E.Cast(min);
                         var pred = Q.GetPrediction(_t);
                         Q2.SourcePosition = Program.pixie.Position;
 
-                        Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
                         Q2.Cast(pred.CastPosition);
+                        Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
+                        
                     }
                 }
 
@@ -90,9 +91,9 @@ namespace Prototype_Lulu
                         E.Cast(min);
                         var pred = Q.GetPrediction(_t);
                         Q2.SourcePosition = Program.pixie.Position;
-
-                        Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
                         Q2.Cast(pred.CastPosition);
+                        Player.CastSpell(SpellSlot.Q, Program.pixie.Position, _t.ServerPosition);
+                       
                     }
                 }
             }

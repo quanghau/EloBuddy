@@ -37,7 +37,7 @@ namespace Prototype_Lulu
 
             LuluLaneclearMenu = LuluMainMenu.AddSubMenu("Laneclear", "Laneclear");
             LuluLaneclearMenu.AddLabel("[LaneClear Settings]");
-            LuluLaneclearMenu.Add("LaneClearQ", new CheckBox("Use E in LaneClear"));
+            LuluLaneclearMenu.Add("LaneClearQ", new CheckBox("Use Q in LaneClear"));
             LuluLaneclearMenu.Add("LaneclearMinions", new Slider("Minimum minions(x) in lane to use Q", 3, 1, 15));
             LuluLaneclearMenu.Add("LaneClearMana", new Slider("Minimum Mana to use Q in Laneclear Mode (%)", 40, 1, 100));
 
