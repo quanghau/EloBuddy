@@ -50,7 +50,7 @@ namespace Prototype_Lulu
 
                 //bool bCast = Program._Player.Distance(pred.UnitPosition) <= W.Range + Utils.TravelTimeCalculate(Program._Player.Distance(pred.UnitPosition), W.CastDelay, Q.Speed) * _t.MoveSpeed;
                 if (pred.HitChance >= HitChance.High)
-                    Q.Cast(pred.UnitPosition);
+                    Q.Cast(pred.CastPosition);
 
             }
         }
