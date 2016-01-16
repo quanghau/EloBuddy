@@ -13,9 +13,15 @@ namespace Prototype_Lulu
         // public static void Initialize() { }
         public static float TravelTimeCalculate(float distance, float delay, float Speed = 0)
         {
+            /*
             if (Speed != 0)
                 return distance / Speed + delay;
             return delay;
+            */
+
+            return (Speed != 0) ? distance/Speed + delay : delay;
+
+            
         }
 
         public static float CalculateMaxDamage(AIHeroClient t)

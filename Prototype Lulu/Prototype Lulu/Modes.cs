@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EloBuddy;
 using EloBuddy.SDK;
+using EloBuddy.SDK.Menu.Values;
 
 namespace Prototype_Lulu
 {
@@ -23,7 +24,8 @@ namespace Prototype_Lulu
         {
             KillSteal();
             Program.Pix();
-            if (Config.ReturnBoolMenu("Protector", "ProtectorUseE") || Config.ReturnBoolMenu("Protector", "ProtectorUseR")) Protector();
+            if (SpellFactory.E.IsReady()) ProtectorE();
+            if (SpellFactory.R.IsReady()) ProtectorR();
 
             //Modes
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
@@ -65,19 +67,16 @@ namespace Prototype_Lulu
 
         private static void LaneClear()
         {
+            if (!Config.LuluLaneclearMenu["LaneClearQ"].Cast<CheckBox>().CurrentValue || Config.LuluLaneclearMenu["LaneClearMana"].Cast<Slider>().CurrentValue <= Program._Player.ManaPercent)
+                return;
 
             var minions = EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Minion, EntityManager.UnitTeam.Enemy, Program._Player.Position, SpellFactory.Q.Range, false);
 
-            foreach (var minion in minions)
-            {
-                if (minions.Count() >= 3)
-                { 
-
-                var loc = EntityManager.MinionsAndMonsters.GetLineFarmLocation(minions, SpellFactory.Q.Width, (int)SpellFactory.Q.Range);
-                SpellFactory.Q.Cast(loc.CastPosition);
-                }
-
-            }
+            if (minions.Count() >= Config.LuluLaneclearMenu["LaneclearMinions"].Cast<Slider>().CurrentValue)
+             { 
+               var loc = EntityManager.MinionsAndMonsters.GetLineFarmLocation(minions, SpellFactory.Q.Width, (int)SpellFactory.Q.Range);
+               SpellFactory.Q.Cast(loc.CastPosition);
+             }
         }
 
         private static void Flee()
@@ -108,42 +107,45 @@ namespace Prototype_Lulu
             }
         }
 
-        private static void Protector()
+       
+        private static void ProtectorE()
         {
-            foreach (var ally in EntityManager.Heroes.Allies.Where(x => Program._Player.IsInRange(x, SpellFactory.E.Range) && x.HealthPercent < 95).OrderBy(x => x.HealthPercent))
+            foreach (var ally in EntityManager.Heroes.Allies.Where(x => Program._Player.IsInRange(x, SpellFactory.E.Range)).OrderBy(x => x.HealthPercent))
             {
                 if (ally.HasBuffOfType(BuffType.Poison) && Config.ReturnBoolMenu("Protector", "Poison"))
-                    SpellFactory.E.Cast(Program._Player);
-                if (ally.IsMe && Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB"))
+                    SpellFactory.E.Cast(ally);
+                if (ally.IsMe)
                 {
-                    if (ally.HealthPercent <= 40 && ally.CountEnemiesInRange(600) > 0)
+                    if (ally.HealthPercent <= 50 && ally.CountEnemiesInRange(700) > 0)
                         SpellFactory.E.Cast(Program._Player);
-
-                    if (!SpellFactory.E.IsReady() && ally.HealthPercent <= Config.ReturnIntMenu("Protector", ally.ChampionName + "SL"))
-                        SpellFactory.R.Cast(ally);
                 }
                 else if (!ally.IsMe)
                 {
 
-                    if (SpellFactory.E.IsReady() && Config.ReturnBoolMenu("Protector", "ProtectorUseE") &&
-                        ally.CountEnemiesInRange(600) > 0)
+                    if (Config._AShield && Config._AShieldMana >= Program._Player.ManaPercent &&  ally.CountEnemiesInRange(700) > 0)
                     {
-                        //Splitted (if) to nested to increase performance ?
-                        if (Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB"))
-                        {
+                        if (ally.HealthPercent <= 95)
                             SpellFactory.E.Cast(ally);
-                           // Console.WriteLine("Protected Ally: " + ally.ChampionName);
-                        }
                     }
-                    else if ((!SpellFactory.E.IsReady() || !Program._Player.IsInRange(ally,SpellFactory.E.Range)) && Config.ReturnBoolMenu("Protector", "ProtectorUseR") &&
-                             Program._Player.CountEnemiesInRange(800) > 0)
+                }
+            }
+        }
+
+        private static void ProtectorR()
+        {
+            foreach (var ally in EntityManager.Heroes.Allies.Where(x => Program._Player.IsInRange(x, SpellFactory.R.Range)))
+            {
+                if (ally.IsMe)
+                {
+                    if (Config._AutoRLulu && Program._Player.HealthPercent <= Config._AutoRLuluHp)
+                        SpellFactory.R.Cast(Program._Player);
+                }
+                else if (!ally.IsMe)
+                {
+                    if (Config._AutoR(ally.ChampionName) && ally.CountEnemiesInRange(800) > 0)
                     {
-                        if (Config.ReturnBoolMenu("Protector", ally.ChampionName + "CB") &&
-                            ally.HealthPercent <= Config.ReturnIntMenu("Protector", ally.ChampionName + "SL"))
-                        {
+                        if (ally.HealthPercent <= Config._AutoRHp(ally.ChampionName))
                             SpellFactory.R.Cast(ally);
-                            //Console.WriteLine("Protected Ally: " + ally.ChampionName);
-                        }
                     }
                 }
             }
