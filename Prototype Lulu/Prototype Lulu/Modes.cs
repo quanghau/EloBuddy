@@ -67,8 +67,8 @@ namespace Prototype_Lulu
 
         private static void LaneClear()
         {
-            if (!Config.LuluLaneclearMenu["LaneClearQ"].Cast<CheckBox>().CurrentValue || Config.LuluLaneclearMenu["LaneClearMana"].Cast<Slider>().CurrentValue <= Program._Player.ManaPercent)
-                return;
+            //if (!Config.LuluLaneclearMenu["LaneClearQ"].Cast<CheckBox>().CurrentValue || Config.LuluLaneclearMenu["LaneClearMana"].Cast<Slider>().CurrentValue <= Program._Player.ManaPercent)
+             //   return;
 
             var minions = EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Minion, EntityManager.UnitTeam.Enemy, Program._Player.Position, SpellFactory.Q.Range, false);
             foreach (var minion in minions)
@@ -126,7 +126,7 @@ namespace Prototype_Lulu
                 else if (!ally.IsMe)
                 {
 
-                    if (Config._AShield && Config._AShieldMana >= Program._Player.ManaPercent &&  ally.CountEnemiesInRange(700) > 0)
+                    if (Config._AShield && Config._AShieldMana <= Program._Player.ManaPercent &&  ally.CountEnemiesInRange(700) > 0)
                     {
                         if (ally.HealthPercent <= 95)
                             SpellFactory.E.Cast(ally);
