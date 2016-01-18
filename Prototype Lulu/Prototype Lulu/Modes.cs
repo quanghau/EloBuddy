@@ -120,15 +120,15 @@ namespace Prototype_Lulu
                     SpellFactory.E.Cast(ally);
                 if (ally.IsMe)
                 {
-                    if (ally.HealthPercent <= 50 && ally.CountEnemiesInRange(700) > 0)
+                    if (ally.HealthPercent <= 50 && ally.CountEnemiesInRange(600) > 0)
                         SpellFactory.E.Cast(Program._Player);
                 }
                 else if (!ally.IsMe)
                 {
 
-                    if (Config._AShield && Config._AShieldMana <= Program._Player.ManaPercent &&  ally.CountEnemiesInRange(700) > 0)
+                    if (Config._AShield && Config._AShieldMana <= Program._Player.ManaPercent &&  ally.CountEnemiesInRange(600) > 0)
                     {
-                        if (ally.HealthPercent <= 95)
+                        if (ally.HealthPercent <= 85)
                             SpellFactory.E.Cast(ally);
                     }
                 }
