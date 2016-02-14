@@ -201,14 +201,14 @@ namespace Protype_Viktor
 
 
 
-
+            /*
             SelectSkin(_SkinChanger.CurrentValue);
 
             _SkinChanger.OnValueChange += delegate (ValueBase<int> s, ValueBase<int>.ValueChangeArgs aargs)
             {
                 SelectSkin(aargs.NewValue);
             };
-
+            */
 
 
             Game.OnTick += Game_OnTick;
@@ -359,9 +359,11 @@ namespace Protype_Viktor
             ViktorDrawMenu.Add("DrawR", new CheckBox("Draw R"));
 
             ViktorMiscMenu = ViktorMenu.AddSubMenu("Misc", "Misc");
+            /*
             ViktorMiscMenu.AddLabel("[Skin Selector]");
             ViktorMiscMenu.Add("SkinChanger", new Slider("Skin ID:", 1, 1, 4));
             ViktorMiscMenu.AddSeparator(10);
+            */
             ViktorMiscMenu.Add("RTickSlider", new Slider("R Follow Speed (ms):", 50, 10, 100));
             ViktorMiscMenu.AddLabel("*Lower is better, 50 is optimal.");
             ViktorMiscMenu.AddSeparator(10);
@@ -641,6 +643,7 @@ namespace Protype_Viktor
             return new Tuple<bool, string, string>(false, "", "");
         }
 
+        /*
         private static void SelectSkin(int skn)
         {
             if (_Player.SkinId == skn) return;
@@ -660,6 +663,7 @@ namespace Protype_Viktor
                     break;
             }
         }
+        */
 
 
     }
