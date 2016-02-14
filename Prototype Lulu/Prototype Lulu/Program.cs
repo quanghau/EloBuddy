@@ -37,12 +37,14 @@ namespace Prototype_Lulu
 
             Drawing.OnDraw += Drawing_OnDraw;
 
+            /*
             Utils.SelectSkin(Config._SkinSelector.CurrentValue);
 
             Config._SkinSelector.OnValueChange += delegate (ValueBase<int> s, ValueBase<int>.ValueChangeArgs aargs)
             {
                 Utils.SelectSkin(aargs.NewValue);
             };
+            */
 
 
 

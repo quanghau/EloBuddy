@@ -90,9 +90,11 @@ namespace Prototype_Lulu
 
             LuluMiscMenu = LuluMainMenu.AddSubMenu("Misc", "Misc");
             LuluMiscMenu.AddGroupLabel("[Misc Settings]");
+            /*
             LuluMiscMenu.AddLabel("[Skin Selector]");
             LuluMiscMenu.Add("SkinSelector", new CheckBox("Enable Skin Selector"));
             LuluMiscMenu.Add("SkinID", new Slider("Skin ID:", 1, 1, 5));
+            */
             LuluMiscMenu.AddLabel("[Prediction]");
             LuluMiscMenu.Add("PredictionH", new Slider("Prediction Hitchance:", 3, 1, 3));
 
@@ -107,10 +109,12 @@ namespace Prototype_Lulu
         }
 
         //Skin Selector Config
+        /*
         public static Slider _SkinSelector
         {
             get { return LuluMiscMenu["SkinID"].Cast<Slider>(); }
         }
+        */
 
         //E protect
         public static bool _AShield {  get { return LuluAutoShieldMenu["AShield"].Cast<CheckBox>().CurrentValue; } }

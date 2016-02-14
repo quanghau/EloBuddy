@@ -45,7 +45,7 @@ namespace Prototype_Lulu
             }
             return dmg;
         }
-
+        /*
         public static void SelectSkin(int skn)
         {
             if (Program._Player.SkinId == skn) return;
@@ -68,6 +68,7 @@ namespace Prototype_Lulu
                     break;
             }
         }
+        */
 
 
 
