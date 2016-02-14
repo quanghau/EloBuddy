@@ -148,11 +148,12 @@ namespace Protype_Viktor
         {
             get { return ViktorMiscMenu["RTickSlider"].Cast<Slider>().CurrentValue; }
         }
-
+        /*
         private static Slider _SkinChanger
         {
             get { return ViktorMiscMenu["SkinChanger"].Cast<Slider>(); }
         }
+        */
 
         private static bool _AdvancedGapClose
         {
