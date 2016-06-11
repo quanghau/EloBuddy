@@ -646,12 +646,12 @@ namespace Protype_Viktor
                 var prediction = E.GetPrediction(target);
                 var predictDmg = PredictDamage(target);
                 //Chat.Print("Target Health: " + target.Health + "Predict Dmg: " + predictDmg);
-                if (target.HealthPercent > 5 && _CheckR && prediction.HitChance >= HitChance.High)
+                if (target.HealthPercent > 5 && _CheckR)
                 {
-                    if (target.Health <= predictDmg)
+                    if (target.Health <= predictDmg * 1.15)
                         R.Cast(target);
                 }
-                else if (target.HealthPercent > 5 && !_CheckR && prediction.HitChance >= HitChance.High)
+                else if (target.HealthPercent > 5 && !_CheckR)
                 {
                     R.Cast(target);
                 }
