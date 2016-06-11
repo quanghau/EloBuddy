@@ -9,6 +9,7 @@ using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
+using Prototype_Viktor;
 
 namespace Protype_Viktor
 {
@@ -21,7 +22,7 @@ namespace Protype_Viktor
         private static SpellSlot IgniteSlot;
         private static bool bIgnite;
         private static Spell.Skillshot W, E, R;
-        private static int EMaxRange = 1225;
+        public static int EMaxRange = 1225;
         private static int _tick = 0;
         private static Vector3 startPos;
         private static Menu ViktorMenu;
@@ -250,9 +251,15 @@ namespace Protype_Viktor
             KillSecure();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClearBeta();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) Harass();
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear)) JungleClear();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
+            {
+                JungleClearEBeta();
+                JungleClearQBeta(); 
+            }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) QLastHitBeta();
+            
 
 
         }
@@ -386,7 +393,7 @@ namespace Protype_Viktor
         {
             if (W.IsReady() && _ViktorW) CastW();
             if (Q.IsReady() && _ViktorQ) CastQ();
-            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 120);
+            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 80);
             if (R.IsReady() && _ViktorR) CastR();
             if (bIgnite && _UseIgnite) UseIgnite();
 
@@ -423,6 +430,97 @@ namespace Protype_Viktor
                 }
             }
         }
+
+        private static void LaneClearBeta()
+        {
+            if (_LaneClearMana >= _Player.ManaPercent) return;
+
+            var minions = EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Minion, EntityManager.UnitTeam.Enemy, _Player.Position, EMaxRange, false);
+            foreach (var minion in minions)
+            {
+                if (E.IsReady() && _LaneClearE)
+                {
+                    var farmLoc = Laser.GetBestLaserFarmLocation(false);
+                    if (farmLoc.MinionsHit >= _MinMinions)
+                    {
+                        Player.CastSpell(SpellSlot.E,farmLoc.Position2.To3D(),farmLoc.Position1.To3D());
+                    }
+                }
+                if (Q.IsReady() && _LaneClearQ)
+                {
+                    if (minion.BaseSkinName.ToLower().Contains("siege") && Q.IsInRange(minion))
+                    {
+                        Q.Cast(minion);
+                        Orbwalker.ForcedTarget = minion;
+                    }
+                    else
+                    {
+                        var mins = minions.OrderByDescending(x => x.HealthPercent);
+                        Q.Cast(mins.FirstOrDefault());
+                    }
+                }
+            }
+        }
+
+
+        private static void JungleClearEBeta()
+        {
+            if (!E.IsReady()) return;
+         
+            var startPos = new Vector2(0, 0);
+            var endPos = new Vector2(0, 0);
+            foreach (
+                var minion in
+                    EntityManager.MinionsAndMonsters.GetJungleMonsters(Program._Player.Position, 525)
+                        .Where(x => x.Distance(Program._Player) <= 1200))
+            {
+                var farmLoc = Laser.LaserLocation(minion.Position.To2D(),
+                    (from mnion in
+                        EntityManager.MinionsAndMonsters.GetJungleMonsters(minion.Position,
+                            525)
+                     select mnion.Position.To2D()).ToList(), E.Width, 525);
+                startPos = minion.Position.To2D();
+                endPos = farmLoc;
+            }
+            if (startPos.Distance(_Player.ServerPosition) <= 525)
+            {
+                Player.CastSpell(SpellSlot.E, endPos.To3D(), startPos.To3D());
+            }
+        }
+
+        private static void JungleClearQBeta()
+        {
+            if (!Q.IsReady()) return;
+            foreach (
+                var minion in
+                    EntityManager.MinionsAndMonsters.GetJungleMonsters(Program._Player.Position, 525)
+                        .Where(x => x.Distance(Program._Player) <= 670).OrderByDescending(x => x.HealthPercent))
+            {
+                Core.DelayAction(() => Q.Cast(minion), 35);
+            }
+
+        }
+
+        public static void QLastHitBeta()
+        {
+            if (!Q.IsReady()) return;
+
+            var min = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
+                Program._Player.Position,Q.Range)
+                .Where(x => x.Health <= Program._Player.GetAutoAttackDamage(x)).ToList();
+            if (min.Count() > 1)
+            {
+                var castedMinion = min.OrderBy(x => x.HealthPercent).FirstOrDefault();
+                var secMinion = min.OrderBy(x => x.HealthPercent).FirstOrDefault();
+                Q.Cast(castedMinion);
+                Orbwalker.ForcedTarget = secMinion;
+            }
+        }
+
+
+
+
+
 
         private static void JungleClear()
         {
