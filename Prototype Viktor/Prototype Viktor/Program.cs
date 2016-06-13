@@ -391,10 +391,10 @@ namespace Protype_Viktor
 
         private static void Combo()
         {
-            if (W.IsReady() && _ViktorW) CastW();
-            if (Q.IsReady() && _ViktorQ) CastQ();
-            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 80);
             if (R.IsReady() && _ViktorR) CastR();
+            if (Q.IsReady() && _ViktorQ) CastQ();
+            if (W.IsReady() && _ViktorW) CastW();
+            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 80);
             if (bIgnite && _UseIgnite) UseIgnite();
 
 
