@@ -53,6 +53,12 @@ namespace Protype_Viktor
         {
             get { return ViktorComboMenu["UseIgnite"].Cast<CheckBox>().CurrentValue; }
         }
+
+        private static int _ComboMode
+        {
+            get { return ViktorComboMenu["ComboMode"].Cast<ComboBox>().CurrentValue; }
+        }
+
         private static bool _CheckR
         {
             get { return ViktorComboMenu["CheckR"].Cast<CheckBox>().CurrentValue; }
@@ -250,7 +256,11 @@ namespace Protype_Viktor
 
             KillSecure();
 
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            {
+                if (_ComboMode == 1) ComboWREQ();
+                else ComboWQER();   
+            }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClearBeta();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) Harass();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
@@ -322,6 +332,7 @@ namespace Protype_Viktor
             ViktorComboMenu.Add("UseE", new CheckBox("Use E"));
             ViktorComboMenu.Add("UseR", new CheckBox("Use R"));
             ViktorComboMenu.Add("UseIgnite", new CheckBox("Use Ignite", false));
+            ViktorComboMenu.Add("ComboMode", new ComboBox("Combo Mode", 1, "WQER (Old)", "WREQ (New)"));
             ViktorComboMenu.Add("FollowR", new CheckBox("Auto Follow R (Only Enemy)"));
             ViktorComboMenu.Add("FollowRViktor", new CheckBox("Auto Follow R (Enemies&Viktor)", false));
             ViktorComboMenu.Add("CheckR", new CheckBox("Cast R only if enemy is killable with Combo"));
@@ -389,16 +400,27 @@ namespace Protype_Viktor
         }
         #endregion
 
-        private static void Combo()
+        private static void ComboWQER()
         {
-            if (R.IsReady() && _ViktorR) CastR();
-            if (Q.IsReady() && _ViktorQ) CastQ();
             if (W.IsReady() && _ViktorW) CastW();
-            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 80);
+            if (Q.IsReady() && _ViktorQ) CastQ();
+            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 50);
+            if (R.IsReady() && _ViktorR) CastR();
             if (bIgnite && _UseIgnite) UseIgnite();
 
 
         }
+
+
+        private static void ComboWREQ()
+        {
+            if (W.IsReady() && _ViktorW) CastW();
+            if (R.IsReady() && _ViktorR) CastR();
+            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 50);
+            if (Q.IsReady() && _ViktorQ) CastQ();
+            if (bIgnite && _UseIgnite) UseIgnite();
+        }
+
 
         private static void Harass()
         {
