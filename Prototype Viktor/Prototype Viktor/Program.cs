@@ -367,13 +367,11 @@ namespace Prototype_Viktor
             {
                 if (_KsE && target.HealthPercent <= 15)
                 {
-                    Console.WriteLine("[" + DateTime.Now + " E ] " + _Player.GetSpellDamage(target, SpellSlot.E));
                     CastE();
                 }
 
                 if (_KsQ && target.IsValidTarget(Q.Range) && target.Health < _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg())
-                {
-                    Console.WriteLine("[" + DateTime.Now + " Q ] " + _Player.GetSpellDamage(target, SpellSlot.Q) + CalculateAADmg());
+                {     
                     CastQ();
                 }
             }
