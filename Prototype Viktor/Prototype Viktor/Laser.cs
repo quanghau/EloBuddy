@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using Protype_Viktor;
 using SharpDX;
 
 namespace Prototype_Viktor
