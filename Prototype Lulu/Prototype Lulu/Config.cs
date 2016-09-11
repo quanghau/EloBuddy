@@ -26,10 +26,11 @@ namespace Prototype_Lulu
             LuluComboMenu.Add("UseQ", new CheckBox("Use Q"));
             LuluComboMenu.Add("UseW", new CheckBox("Use W",false));
             LuluComboMenu.Add("UseE", new CheckBox("Use E"));
-            LuluComboMenu.Add("UseR", new CheckBox("Use R",false));
+         //   LuluComboMenu.Add("UseR", new CheckBox("Use R",false));
             LuluComboMenu.Add("UseIgnite", new CheckBox("Use Ignite"));
-            LuluComboMenu.Add("HealthR", new Slider("Use Ulti(R) when Health is under (%):", 10, 1, 100));
+            //LuluComboMenu.Add("HealthR", new Slider("Use Ulti(R) when Health is under (%):", 10, 1, 100));
             LuluComboMenu.AddSeparator(15);
+            LuluComboMenu.AddLabel("[KillSteal Settings]");
             LuluComboMenu.Add("KillSteal", new CheckBox("Enable KillSteal"));
             LuluComboMenu.Add("KillStealQ", new CheckBox("KillSteal with Q"));
             LuluComboMenu.Add("KillStealE", new CheckBox("KillSteal with E"));
@@ -79,11 +80,11 @@ namespace Prototype_Lulu
             LuluAutoRMenu = LuluMainMenu.AddSubMenu("Auto R", "Auto R");
             LuluAutoRMenu.AddLabel("[Auto Ulti(R) Settings]");
             LuluAutoRMenu.Add("AutoRLuLu", new CheckBox("Auto cast Ulti for Lulu"));
-            LuluAutoRMenu.Add("AutoRSliderLulu", new Slider("Minimum HP to cast Ulti(R) (%):", 20, 1, 100));
+            LuluAutoRMenu.Add("AutoRSliderLulu", new Slider("Minimum HP to cast Ulti(R) ({0}%):", 20, 1, 100));
             foreach (var protectTarget in EntityManager.Heroes.Allies.Where(x => !x.IsMe))
             {
                 LuluAutoRMenu.Add(protectTarget.ChampionName + "CB", new CheckBox("Protect " + protectTarget.ChampionName));
-                LuluAutoRMenu.Add(protectTarget.ChampionName + "SL", new Slider(protectTarget.ChampionName + " Minimum HP to cast Ulti(R) (%):", 20, 1, 100));
+                LuluAutoRMenu.Add(protectTarget.ChampionName + "SL", new Slider(protectTarget.ChampionName + " Minimum HP to cast Ulti(R) ({0}%):", 20, 1, 100));
             }
 
 

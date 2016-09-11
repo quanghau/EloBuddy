@@ -20,6 +20,7 @@ namespace Prototype_Lulu
         public static Spell.Targeted E { get; private set; }
         public static Spell.Targeted R { get; private set; }
         public static Spell.Targeted Ignite { get; private set; }
+        private static SpellSlot IgniteSlot;
 
         static SpellFactory()
         {
@@ -31,11 +32,15 @@ namespace Prototype_Lulu
             E = new Spell.Targeted(SpellSlot.E, 650);
             R = new Spell.Targeted(SpellSlot.R, 900);
 
-            if (Program.bIgnite)
+
+            IgniteSlot = Program._Player.GetSpellSlotFromName("summonerdot");
+            if (IgniteSlot != SpellSlot.Unknown)
             {
-                Ignite = new Spell.Targeted(Program._Player.GetSpellSlotFromName("summonerdot"), 600);
-                Console.WriteLine("Ignite Found! " + Ignite.Slot);
+                Console.WriteLine("Ignite Spell found on slot: " + IgniteSlot);
+                Program.bIgnite = true;
+                Ignite = new Spell.Targeted(IgniteSlot, 600);
             }
+
         }
 
 
@@ -122,7 +127,8 @@ namespace Prototype_Lulu
 
         public static void CastR()
         {
-            if (Config.ReturnBoolMenu("Combo", "UseR") && Program._Player.HealthPercent <= Config.ReturnIntMenu("Combo", "HealthR"))
+            if (Program._Player.HasBuff("Return") || Program._Player.IsInFountainRange()) return;
+            if (Config.ReturnBoolMenu("Combo", "UseR") && Program._Player.HealthPercent <= Config._AutoRLuluHp)
                 R.Cast(Program._Player);
         }
 

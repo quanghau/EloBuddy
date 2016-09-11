@@ -27,8 +27,6 @@ namespace Prototype_Lulu
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
-            if (_Player.ChampionName != "Lulu") return;
-            bIgnite = Player.Spells.FirstOrDefault(o => o.SData.Name.Contains("summonerdot")) != null;
 
             SpellFactory.Initialize();
             Config.Initialize();

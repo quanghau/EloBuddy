@@ -33,7 +33,7 @@ namespace Prototype_Lulu
         private static void Gapcloser_OnGapcloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
             if (sender.IsAlly || !SpellFactory.W.IsReady()) return;
-            if (e.End.Distance(Program._Player) <= 170 && Config.ReturnBoolMenu("Protector", "GapClose"))
+            if (Config.ReturnBoolMenu("Protector", "GapClose") && sender.IsValidTarget(SpellFactory.W.Range))
             {
                 SpellFactory.W.Cast(sender);
                 //Console.WriteLine("(Me) Gapclose Prevented on Target: " + sender.ChampionName);
@@ -42,7 +42,7 @@ namespace Prototype_Lulu
             {
                 foreach (var ally in EntityManager.Heroes.Allies.Where(x => x.IsAlly && Program._Player.IsInRange(x, SpellFactory.W.Range)))
                 {
-                    if (e.End.Distance(ally) <= 170)
+                    if (sender.IsValidTarget(SpellFactory.W.Range))
                     {
                         SpellFactory.W.Cast(sender);
                         // Console.WriteLine("(Ally) Gapclose Prevented on Target: " + sender.ChampionName);

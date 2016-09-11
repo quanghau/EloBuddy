@@ -44,7 +44,7 @@ namespace Prototype_Lulu
                 if (target.IsValidTarget(SpellFactory.Q.Range) && !target.IsZombie && !target.IsInvulnerable)
                     SpellFactory.CastQ(target);
             }
-            if (SpellFactory.R.IsReady()) SpellFactory.CastR();
+           // if (SpellFactory.R.IsReady()) SpellFactory.CastR();
             if (Program.bIgnite && SpellFactory.Ignite.IsReady() && Config.ReturnBoolMenu("Combo", "UseIgnite"))
                 SpellFactory.UseIgnite();
         }
@@ -67,8 +67,8 @@ namespace Prototype_Lulu
 
         private static void LaneClear()
         {
-            //if (!Config.LuluLaneclearMenu["LaneClearQ"].Cast<CheckBox>().CurrentValue || Config.LuluLaneclearMenu["LaneClearMana"].Cast<Slider>().CurrentValue <= Program._Player.ManaPercent)
-             //   return;
+            if (!Config.LuluLaneclearMenu["LaneClearQ"].Cast<CheckBox>().CurrentValue || Program._Player.ManaPercent < Config.LuluLaneclearMenu["LaneClearMana"].Cast<Slider>().CurrentValue)
+              return;
 
             var minions = EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Minion, EntityManager.UnitTeam.Enemy, Program._Player.Position, SpellFactory.Q.Range, false);
             foreach (var minion in minions)
@@ -137,21 +137,21 @@ namespace Prototype_Lulu
 
         private static void ProtectorR()
         {
+            if (Program._Player.HasBuff("Return")) return;
+
             foreach (var ally in EntityManager.Heroes.Allies.Where(x => Program._Player.IsInRange(x, SpellFactory.R.Range)))
             {
-                if (ally.IsMe)
+                
+               if (ally.IsMe && Config._AutoRLulu)
                 {
-                    if (Config._AutoRLulu && Program._Player.HealthPercent <= Config._AutoRLuluHp)
-                        SpellFactory.R.Cast(Program._Player);
+                 if (!ally.IsInFountainRange() && Program._Player.HealthPercent <= Config._AutoRLuluHp &&ally.CountEnemiesInRange(800) > 0)
+                        SpellFactory.R.Cast(Program._Player); 
                 }
-                else if (!ally.IsMe)
-                {
-                    if (Config._AutoR(ally.ChampionName) && ally.CountEnemiesInRange(800) > 0)
+                    else if (!ally.IsMe && Config._AutoR(ally.ChampionName))
                     {
-                        if (ally.HealthPercent <= Config._AutoRHp(ally.ChampionName))
+                        if (!ally.IsInFountainRange() && ally.HealthPercent <= Config._AutoRHp(ally.ChampionName) && ally.CountEnemiesInRange(800) > 0)
                             SpellFactory.R.Cast(ally);
                     }
-                }
             }
         }
 
