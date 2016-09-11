@@ -17,7 +17,7 @@ namespace Prototype_Viktor
         #region Variables
 
         public static AIHeroClient _Player { get { return ObjectManager.Player; } }
-        public static GameObject ViktorUlti = null;
+
 
         private static Spell.Targeted Q, Ignite;
         private static SpellSlot IgniteSlot;
@@ -184,8 +184,6 @@ namespace Prototype_Viktor
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
-            GameObject.OnCreate += GameObject_OnCreate;
-            GameObject.OnDelete += GameObject_OnDelete;
             Drawing.OnDraw += Drawing_OnDraw;
 
 
@@ -193,29 +191,31 @@ namespace Prototype_Viktor
             Console.WriteLine("Prototype Viktor " + version + " Loaded!");
         }
 
-        private static void GameObject_OnDelete(GameObject sender, EventArgs args)
-        {
-            if (sender.Name.Contains("Viktor_Base_R_Droid.troy"))
-            {
-                ViktorUlti = null;
-            }
-        }
-
-        private static void GameObject_OnCreate(GameObject sender, EventArgs args)
-        {
-            if (sender.Name.Contains("Viktor_Base_R_Droid.troy"))
-            {
-                ViktorUlti = sender;
-            }
-        }
-
         private static void Game_OnTick(EventArgs args)
         {
             if (_Player.IsDead || _Player.HasBuff("Recall")) return;
 
-            AutoFollow();
+            if (_AutoFollowR != 2)
+            {
+                if (R.Name != "ViktorChaosStorm" && Core.GameTickCount - _tick >= _RTickSlider)
+                {
+                   var stormT = TargetSelector.GetTarget(1750, DamageType.Magical);
+                   if (stormT != null)
+                    {
+                      R.Cast(stormT);
+                        _tick = Core.GameTickCount;
+                    }
+                  if (stormT == null && _AutoFollowR == 0)
+                   {
+                    R.Cast(_Player);
+                        _tick = Core.GameTickCount;
+                    }
 
-            KillSecure();
+                }
+            }
+
+
+                KillSecure();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
@@ -232,26 +232,7 @@ namespace Prototype_Viktor
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) QLastHitBeta();
         }
 
-        private static void AutoFollow()
-        {
-            if (ViktorUlti == null) return;
-            var ultiPosition = ViktorUlti.Position;
-            var stormT = EntityManager.Heroes.Enemies.OrderBy(x => x.HealthPercent).Where(x => x.IsValidTarget(2000, true) && !x.IsDead && x.Distance(ultiPosition) <= 2000).ToList();
-            if (_AutoFollowR != 2 && stormT.Count > 0)
-            {
-                Core.DelayAction(() => R.Cast(stormT.FirstOrDefault().Position), 50);
-                ultiPosition = ViktorUlti.Position;
-                if (stormT.FirstOrDefault().Position != ultiPosition)
-                {
-                    Core.DelayAction(() => R.Cast(stormT.FirstOrDefault().Position), 50);
-                }
-            }
-            else if (_AutoFollowR == 0 && stormT.Count == 0)
-            {
-                Core.DelayAction(() => R.Cast(_Player.Position), 50);
-            }
-           
-        }
+  
 
         #endregion
 
