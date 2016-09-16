@@ -27,7 +27,7 @@ namespace Prototype_Lulu
 
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
-
+            if (_Player.ChampionName != "Lulu") return;
             SpellFactory.Initialize();
             Config.Initialize();
             Events.Initialize();
