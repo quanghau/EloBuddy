@@ -373,9 +373,9 @@ namespace Prototype_Viktor
             if (sender.IsMe && args.SData.Name.ToLower().Contains("viktorpowertransferreturn"))
                 Core.DelayAction(Orbwalker.ResetAutoAttack, 100);
                 */
-            if (sender.IsMe && args.SData.Name.ToLower().Contains("viktorpowertransferreturn"))
+            if (sender.IsMe && args.SData.Name.Contains(Q.Name))
             {
-                Core.DelayAction(Orbwalker.ResetAutoAttack,150);
+                Orbwalker.ResetAutoAttack();
             }
 
         }
