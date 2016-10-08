@@ -184,11 +184,20 @@ namespace Prototype_Viktor
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
+            Orbwalker.OnUnkillableMinion += Orbwalker_OnUnkillableMinion;
             Drawing.OnDraw += Drawing_OnDraw;
 
 
             Chat.Print("Prototype Viktor " + version + " Loaded!");
-            Console.WriteLine("Prototype Viktor " + version + " Loaded!");
+            Console.WriteLine("Prototype Viktor " + version + " Loaded! Last Patch Update: 6.20");
+        }
+
+        private static void Orbwalker_OnUnkillableMinion(Obj_AI_Base target, Orbwalker.UnkillableMinionArgs args)
+        {
+            if (Q.IsReady() && _Player.GetSpellDamage(target,SpellSlot.Q) >= target.Health)
+            {
+                Q.Cast(target);
+            }
         }
 
         private static void Game_OnTick(EventArgs args)
@@ -229,7 +238,7 @@ namespace Prototype_Viktor
                 JungleClearEBeta();
                 JungleClearQBeta();
             }
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) QLastHitBeta();
+           // if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit)) QLastHitBeta();
         }
 
   
@@ -241,7 +250,7 @@ namespace Prototype_Viktor
         {
             if (W.IsReady() && _ViktorW) CastW();
             if (Q.IsReady() && _ViktorQ) CastQ();
-            if (E.IsReady() && _ViktorE) Core.DelayAction(CastE, 35);
+            if (E.IsReady() && _ViktorE) CastE();
             if (R.IsReady() && _ViktorR) CastR();
             if (bIgnite && _UseIgnite) UseIgnite();
         }
@@ -360,8 +369,11 @@ namespace Prototype_Viktor
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            /*
             if (sender.IsMe && args.SData.Name.ToLower().Contains("viktorpowertransferreturn"))
                 Core.DelayAction(Orbwalker.ResetAutoAttack, 100);
+                */
+            if (sender.IsMe && args.Slot == SpellSlot.Q) Orbwalker.ResetAutoAttack();
         }
 
         private static void KillSecure()
