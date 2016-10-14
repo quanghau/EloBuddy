@@ -152,6 +152,7 @@ namespace Prototype_Viktor
             ViktorMiscMenu.AddLabel("*Lower is better, 50 is optimal.");
             ViktorMiscMenu.AddSeparator(10);
             ViktorMiscMenu.AddLabel("[Gapcloser Settings]");
+            ViktorMiscMenu.Add("Interrupt", new CheckBox("Auto Interrupter (W)"));
             ViktorMiscMenu.Add("Gapclose", new CheckBox("Anti GapCloser (W)"));
             ViktorMiscMenu.AddLabel("Anti Gapcloser will cast (W) on Viktor's position");
             /*
@@ -183,6 +184,7 @@ namespace Prototype_Viktor
 
             Game.OnTick += Game_OnTick;
             Gapcloser.OnGapcloser += Gapcloser_OnGapcloser;
+            Interrupter.OnInterruptableSpell += Interrupter_OnInterruptableSpell;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             Orbwalker.OnUnkillableMinion += Orbwalker_OnUnkillableMinion;
             Drawing.OnDraw += Drawing_OnDraw;
@@ -366,6 +368,14 @@ namespace Prototype_Viktor
             if (e.End.Distance(_Player) <= 300)
                 W.Cast(_Player);
         }
+
+
+        private static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
+        {
+            if (sender.IsEnemy && _Interrupter && e.DangerLevel == DangerLevel.High)
+                W.Cast(sender);
+        }
+
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
@@ -618,6 +628,11 @@ namespace Prototype_Viktor
         private static bool _GapCloser
         {
             get { return ViktorMiscMenu["Gapclose"].Cast<CheckBox>().CurrentValue; }
+        }
+
+        private static bool _Interrupter
+        {
+            get { return ViktorMiscMenu["Interrupt"].Cast<CheckBox>().CurrentValue; }
         }
 
         private static bool _LaneClearE
