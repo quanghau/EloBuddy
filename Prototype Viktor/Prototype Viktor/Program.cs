@@ -196,6 +196,10 @@ namespace Prototype_Viktor
 
         private static void Orbwalker_OnUnkillableMinion(Obj_AI_Base target, Orbwalker.UnkillableMinionArgs args)
         {
+            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LastHit) ||
+                !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LaneClear))
+                return;
+
             if (Q.IsReady() && _Player.GetSpellDamage(target,SpellSlot.Q) >= target.Health)
             {
                 Q.Cast(target);
