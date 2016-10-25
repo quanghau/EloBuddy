@@ -32,6 +32,7 @@ namespace Prototype_Viktor
             ViktorComboMenu,
             ViktorHarassMenu,
             ViktorLaneClearMenu,
+            ViktorLastHitMenu,
             ViktorMiscMenu,
             ViktorDrawMenu,
             ViktorRMenu;
@@ -137,6 +138,11 @@ namespace Prototype_Viktor
             ViktorLaneClearMenu.Add("LaneClearManaE", new Slider("Minimum mana for LaneClear Mode (%):", 40, 0, 100));
             ViktorLaneClearMenu.Add("MinMinions", new Slider("Minimum Minions(x) to use E in LaneClear Mode:", 3, 1, 10));
 
+            ViktorLastHitMenu = ViktorMenu.AddSubMenu("LastHit", "LastHit");
+            ViktorLastHitMenu.AddLabel("[LastHit Settings]");
+            ViktorLastHitMenu.Add("UseQ", new CheckBox("Use Q on Unkillable Minion."));
+            ViktorLastHitMenu.Add("QMana", new Slider("Minimum mana({0}%) to use Q:", 30));
+
             ViktorDrawMenu = ViktorMenu.AddSubMenu("Drawings", "Drawings");
             ViktorDrawMenu.AddLabel("[Drawings Settings]");
             ViktorDrawMenu.Add("DisableDraws", new CheckBox("Disable All Drawings", false));
@@ -191,16 +197,16 @@ namespace Prototype_Viktor
 
 
             Chat.Print("Prototype Viktor " + version + " Loaded!");
-            Console.WriteLine("Prototype Viktor " + version + " Loaded! Last Patch Update: 6.20");
+            Console.WriteLine("Prototype Viktor " + version + " Loaded! Last Patch Update: 6.21");
         }
 
         private static void Orbwalker_OnUnkillableMinion(Obj_AI_Base target, Orbwalker.UnkillableMinionArgs args)
         {
-            if (!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LastHit) ||
-                !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LaneClear))
+            if ((!Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LastHit) ||
+                !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModesFlags & Orbwalker.ActiveModes.LaneClear)) && !ViktorLastHitMenu["UseQ"].Cast<CheckBox>().CurrentValue )
                 return;
 
-            if (Q.IsReady() && _Player.GetSpellDamage(target,SpellSlot.Q) >= target.Health)
+            if (Q.IsReady() && _Player.GetSpellDamage(target,SpellSlot.Q) >= target.Health && _Player.ManaPercent >= ViktorLastHitMenu["QMana"].Cast<Slider>().CurrentValue)
             {
                 Q.Cast(target);
             }
