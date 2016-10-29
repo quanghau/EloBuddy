@@ -218,19 +218,19 @@ namespace Prototype_Viktor
 
             if (_AutoFollowR != 2)
             {
-                if (R.Name != "ViktorChaosStorm" && Core.GameTickCount - _tick >= _RTickSlider)
+                if (R.Name != "ViktorChaosStorm") //&& Core.GameTickCount - _tick >= _RTickSlider
                 {
                     //var stormT = TargetSelector.GetTarget(1750, DamageType.Magical);
                     var stormT = EntityManager.Heroes.Enemies.Where(x => x.IsValidTarget(3000, true) && !x.IsDead).OrderBy(x => x.HealthPercent).FirstOrDefault();
                     if (stormT != null)
                     {
                       R.Cast(stormT.Position);
-                        _tick = Core.GameTickCount;
+                       // _tick = Core.GameTickCount;
                     }
                   if (stormT == null && _AutoFollowR == 0)
                    {
                     R.Cast(_Player.Position);
-                        _tick = Core.GameTickCount;
+                       // _tick = Core.GameTickCount;
                     }
 
                 }
