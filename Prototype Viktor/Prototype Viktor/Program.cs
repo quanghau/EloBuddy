@@ -24,7 +24,7 @@ namespace Prototype_Viktor
         private static bool bIgnite;
         private static Spell.Skillshot W, E, R;
         public static int EMaxRange = 1225;
-        private static int _tick;
+        private static int _tick=0;
         private static Vector3 startPos;
         private static Menu ViktorMenu;
 
@@ -220,15 +220,16 @@ namespace Prototype_Viktor
             {
                 if (R.Name != "ViktorChaosStorm" && Core.GameTickCount - _tick >= _RTickSlider)
                 {
-                   var stormT = TargetSelector.GetTarget(1750, DamageType.Magical);
-                   if (stormT != null)
+                    //var stormT = TargetSelector.GetTarget(1750, DamageType.Magical);
+                    var stormT = EntityManager.Heroes.Enemies.Where(x => x.IsValidTarget(3000, true) && !x.IsDead).OrderBy(x => x.HealthPercent).FirstOrDefault();
+                    if (stormT != null)
                     {
-                      R.Cast(stormT);
+                      R.Cast(stormT.Position);
                         _tick = Core.GameTickCount;
                     }
                   if (stormT == null && _AutoFollowR == 0)
                    {
-                    R.Cast(_Player);
+                    R.Cast(_Player.Position);
                         _tick = Core.GameTickCount;
                     }
 
