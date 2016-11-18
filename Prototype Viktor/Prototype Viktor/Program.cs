@@ -439,7 +439,7 @@ namespace Prototype_Viktor
 
         private static void CastE()
         {
-            var target = TargetSelector.GetTarget(EMaxRange, DamageType.Magical);
+            var target = TargetSelector.GetTarget(E.Range - 50, DamageType.Magical);//(EMaxRange, DamageType.Magical);
             if (target != null && target.IsEnemy)
             {
                 if (_Player.ServerPosition.Distance(target.ServerPosition) < E.Range)
